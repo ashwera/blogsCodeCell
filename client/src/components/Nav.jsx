@@ -5,7 +5,12 @@ import './Nav.css'
 const Nav = () => {
   return (
     <header className="top-nav">
-      <div className="brand">codecell blogs</div>
+      <button 
+        className="brand brand-btn" 
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        codecell blogs
+      </button>
       <nav className="nav-tabs">
         <NavLink to="/" end className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           .home

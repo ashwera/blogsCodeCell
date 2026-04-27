@@ -16,6 +16,23 @@
   letter-spacing: 0.25em;
   text-transform: lowercase;
   color: var(--text-muted);
+  cursor: pointer;
+}
+
+.brand-btn {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  backdrop-filter: blur(14px);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.brand-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
 }
 
 .nav-tabs {
