@@ -18,6 +18,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use('/api/items', require('./routes/itemRoutes'));
+app.use('/api/auth',  require('./routes/authRoutes'));
+app.use('/api/blogs', require('./routes/blogRoutes'));
 
 // Start Server
 app.listen(PORT, () => {

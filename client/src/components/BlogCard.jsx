@@ -1,14 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './BlogCard.css';
 
-const BlogCard = ({ title, category, date, imageIndex }) => {
-  // Using simple minimalist geometric patterns via CSS if no image is provided,
-  // or a generated placeholder URL. Since we want an editorial feel, stark black and white works well.
-  
+const BlogCard = ({ id, title, category, date, imageIndex }) => {
   return (
-    <article className="blog-card">
+    <Link to={`/blogs/${id}`} className="blog-card">
       <div className="card-visual">
-        {/* Placeholder for editorial minimalist imagery */}
         <div className={`placeholder-image pattern-${imageIndex % 3}`}></div>
       </div>
       <div className="card-content">
@@ -18,7 +15,7 @@ const BlogCard = ({ title, category, date, imageIndex }) => {
         </div>
         <h3 className="card-title">{title}</h3>
       </div>
-    </article>
+    </Link>
   );
 };
 

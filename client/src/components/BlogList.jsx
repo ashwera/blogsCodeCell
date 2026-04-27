@@ -61,6 +61,7 @@ const BlogList = ({ onBack, focusSearch = false }) => {
           filteredBlogs.map((blog, idx) => (
             <BlogCard
               key={blog.id}
+              id={blog.id}
               title={blog.title}
               category={blog.category}
               date={blog.date}
