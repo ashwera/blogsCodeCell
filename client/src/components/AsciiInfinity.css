@@ -11,7 +11,7 @@
 .ascii-text {
   font-family: monospace;
   /* important for proper ASCII */
-  font-size: clamp(10px, 1.2vw, 14px);
+  font-size: clamp(4px, 0.85vw, 13px);
   line-height: 1.1;
   color: var(--text-color);
   white-space: pre;
@@ -21,8 +21,5 @@
 
   opacity: 0.6;
   /* softer, premium look */
-  letter-spacing: 0.1em;
-
-  transform: scale(1.05);
-  /* slight size boost */
+  letter-spacing: normal;
 }

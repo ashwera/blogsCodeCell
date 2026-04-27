@@ -1,6 +1,6 @@
 .blog-list-container {
   min-height: calc(100vh - 6rem);
-  padding: 8rem 0 6rem;
+  padding: 4rem 0 6rem;
 }
 
 .blog-header {
@@ -35,9 +35,10 @@
 }
 
 .blog-title {
-  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
   margin: 0;
   line-height: 1.04;
+  color: #C1121F;
 }
 
 .blog-subtitle {
@@ -45,7 +46,7 @@
   margin: 0;
   max-width: 42rem;
   line-height: 1.8;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .blog-search-row {
@@ -80,14 +81,20 @@
   gap: 2rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .blog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1080px) {
+@media (min-width: 1024px) {
   .blog-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .blog-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

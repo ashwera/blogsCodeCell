@@ -4,7 +4,6 @@ import { AuthProvider } from './lib/AuthContext'
 import Nav from './components/Nav'
 import Home from './pages/Home'
 import Blogs from './pages/Blogs'
-import About from './pages/About'
 import AdminLayout from './pages/admin/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
 import Requests from './pages/admin/Requests'
@@ -34,7 +33,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:id" element={<BlogDetail />} />
-            <Route path="/about" element={<About />} />
           </Route>
 
           {/* Auth */}

@@ -13,9 +13,6 @@ const Nav = () => {
         <NavLink to="/blogs" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           .blogs
         </NavLink>
-        <NavLink to="/about" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-          .about
-        </NavLink>
         <NavLink to="/login" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           .submit
         </NavLink>

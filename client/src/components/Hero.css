@@ -1,5 +1,5 @@
 .hero-container {
-  min-height: calc(100vh - 5rem);
+  height: calc(100vh - 6rem);
   position: relative;
   display: flex;
   align-items: center;
@@ -106,4 +106,10 @@
   margin-right: auto;
   padding-left: 80px;
   /* key shift */
+}
+
+.underline {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
 }

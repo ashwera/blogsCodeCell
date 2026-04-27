@@ -9,9 +9,9 @@ const Hero = ({ onBrowse }) => {
 
       <div className="hero-content container">
         <h1 className="hero-heading">
-          changing the <span className="accent">world</span>
+          changing the <span className="hero-heading">world</span>
           <br />
-          one <span className="italic">word</span>
+          one <span className="italic text-[#C1121F]">word</span>
           <br />
           at a time
         </h1>
