@@ -13,6 +13,40 @@ import PortalLayout from './pages/portal/PortalLayout'
 import PortalSubmit from './pages/portal/PortalSubmit'
 import PortalSubmissions from './pages/portal/PortalSubmissions'
 import './App.css'
+import { Moon, Sun } from 'lucide-react'
+
+const ThemeToggle = () => {
+  const [isLight, setIsLight] = React.useState(
+    () => localStorage.getItem('cc_theme') === 'light'
+  );
+
+  React.useEffect(() => {
+    if (isLight) {
+      document.body.classList.add('light');
+      localStorage.setItem('cc_theme', 'light');
+    } else {
+      document.body.classList.remove('light');
+      localStorage.setItem('cc_theme', 'dark');
+    }
+  }, [isLight]);
+
+  return (
+    <button 
+      onClick={() => setIsLight(!isLight)}
+      style={{
+        position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 50,
+        background: 'var(--hover-bg)', border: '1px solid var(--border-color)',
+        borderRadius: '50%', width: '3rem', height: '3rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer', color: 'var(--text-color)',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+      }}
+      aria-label="Toggle Theme"
+    >
+      {isLight ? <Moon size={20} /> : <Sun size={20} />}
+    </button>
+  );
+}
 
 const PublicLayout = () => (
   <>
@@ -26,14 +60,16 @@ const PublicLayout = () => (
 function App() {
   return (
     <AuthProvider>
+      <ThemeToggle />
       <BrowserRouter>
         <Routes>
           {/* Public site */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/blogs" element={<Blogs />} />
-            <Route path="/blogs/:id" element={<BlogDetail />} />
           </Route>
+          {/* Blog detail isolated so its custom header is preserved separately from Nav */}
+          <Route path="/blogs/:id" element={<BlogDetail />} />
 
           {/* Auth */}
           <Route path="/login" element={<PortalLogin />} />

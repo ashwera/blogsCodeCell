@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 
 /* ── Design tokens ── */
 const T = {
@@ -71,17 +71,19 @@ function Field({ id, label, type, value, onChange, placeholder, autoFocus }) {
 }
 
 export default function PortalLogin() {
-  const { login, loading, error, setError, user } = useAuth();
+  const { login, register, loading, error, setError, user } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail]       = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail]       = useState('admin@codecell.dev');
+  const [password, setPassword] = useState('codecell123');
+  const [name, setName]         = useState('');
   const [shake, setShake]       = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
 
   // If already logged in, redirect
   useEffect(() => {
     if (user) {
-      navigate(user.role === 'admin' ? '/admin' : '/portal', { replace: true });
+      navigate('/', { replace: true });
     }
   }, [user, navigate]);
 
@@ -90,12 +92,18 @@ export default function PortalLogin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await login(email, password);
+    let result;
+    if (isSignUp) {
+      result = await register(name, email, password);
+    } else {
+      result = await login(email, password);
+    }
+    
     if (!result) {
       setShake(true);
       setTimeout(() => setShake(false), 500);
     } else {
-      navigate(result.role === 'admin' ? '/admin' : '/portal', { replace: true });
+      navigate('/', { replace: true });
     }
   };
 
@@ -111,6 +119,43 @@ export default function PortalLogin() {
       overflow: 'hidden',
     }}>
       <GrainOverlay />
+
+      {/* Back to site button */}
+      <NavLink
+        to="/"
+        style={{
+          position: 'fixed',
+          top: '2rem',
+          left: '2rem',
+          display: 'inline-flex',
+          alignItems: 'center',
+          padding: '0.6rem 1.2rem',
+          background: 'rgba(255,255,255,0.04)',
+          border: `1px solid ${T.border}`,
+          borderRadius: '999px',
+          color: T.muted,
+          fontFamily: T.fontMono,
+          fontSize: '0.72rem',
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          textDecoration: 'none',
+          transition: 'all 0.25s',
+          cursor: 'pointer',
+          zIndex: 10,
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+          e.currentTarget.style.color = T.text;
+          e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.borderColor = T.border;
+          e.currentTarget.style.color = T.muted;
+          e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+        }}
+      >
+        ← back to site
+      </NavLink>
 
       {/* Background decorative text */}
       <div style={{
@@ -164,12 +209,24 @@ export default function PortalLogin() {
             color: T.text,
             margin: 0,
           }}>
-            Contributor<br />Access
+            {isSignUp ? 'Create an' : 'Contributor'} <br /> 
+            {isSignUp ? 'Account' : 'Access'}
           </h1>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+          {isSignUp && (
+            <Field
+              id="register-name"
+              label="Full Name"
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Ayesha R."
+              autoFocus
+            />
+          )}
           <Field
             id="login-email"
             label="Email address"
@@ -177,7 +234,7 @@ export default function PortalLogin() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             placeholder="you@example.com"
-            autoFocus
+            autoFocus={!isSignUp}
           />
           <Field
             id="login-password"
@@ -203,69 +260,66 @@ export default function PortalLogin() {
             </p>
           )}
 
-          {/* Submit */}
-          <button
-            id="login-submit"
-            type="submit"
-            disabled={loading || !email || !password}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '1.1rem 1.5rem',
-              background: loading ? 'rgba(193,18,31,0.12)' : 'rgba(193,18,31,0.15)',
-              border: `1px solid ${loading ? 'rgba(193,18,31,0.3)' : 'rgba(193,18,31,0.55)'}`,
-              color: (!email || !password) ? T.muted : T.text,
-              fontFamily: T.fontBody,
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              cursor: (loading || !email || !password) ? 'not-allowed' : 'pointer',
-              transition: 'border-color 0.25s, background 0.25s, color 0.25s',
-              marginTop: '0.5rem',
-            }}
-            onMouseEnter={e => {
-              if (!loading && email && password) {
-                e.currentTarget.style.background = 'rgba(193,18,31,0.25)';
-                e.currentTarget.style.borderColor = T.red;
-              }
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(193,18,31,0.15)';
-              e.currentTarget.style.borderColor = 'rgba(193,18,31,0.55)';
-            }}
-          >
-            <span>{loading ? 'Signing in…' : 'Sign in'}</span>
-            {!loading && (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            )}
-            {loading && (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                style={{ animation: 'spin 0.8s linear infinite' }}>
-                <circle cx="12" cy="12" r="10" strokeOpacity="0.25"/>
-                <path d="M12 2a10 10 0 0 1 10 10" />
-              </svg>
-            )}
-          </button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => { setIsSignUp(!isSignUp); setError(''); setShake(false); }}
+              style={{
+                background: 'none', border: 'none', color: T.muted, textDecoration: 'underline',
+                fontFamily: T.fontMono, fontSize: '0.65rem', cursor: 'pointer', padding: 0,
+                letterSpacing: '0.05em'
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = T.text}
+              onMouseLeave={e => e.currentTarget.style.color = T.muted}
+            >
+              {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Register'}
+            </button>
+            <button
+              id="login-submit"
+              type="submit"
+              disabled={loading || !email || !password || (isSignUp && !name)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '1.1rem 1.5rem',
+                background: loading ? 'rgba(193,18,31,0.12)' : 'rgba(193,18,31,0.15)',
+                border: `1px solid ${loading ? 'rgba(193,18,31,0.3)' : 'rgba(193,18,31,0.55)'}`,
+                color: (!email || !password || (isSignUp && !name)) ? T.muted : T.text,
+                fontFamily: T.fontBody,
+                fontSize: '0.85rem',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                cursor: (loading || !email || !password || (isSignUp && !name)) ? 'not-allowed' : 'pointer',
+                transition: 'border-color 0.25s, background 0.25s, color 0.25s',
+              }}
+              onMouseEnter={e => {
+                if (!loading && email && password && (!isSignUp || name)) {
+                  e.currentTarget.style.background = 'rgba(193,18,31,0.25)';
+                  e.currentTarget.style.borderColor = T.red;
+                }
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(193,18,31,0.15)';
+                e.currentTarget.style.borderColor = 'rgba(193,18,31,0.55)';
+              }}
+            >
+              <span>{loading ? 'Processing…' : (isSignUp ? 'Register' : 'Sign in')}</span>
+              {!loading && (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '2rem'}}>
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              )}
+              {loading && (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                  style={{ animation: 'spin 0.8s linear infinite', marginLeft: '2rem' }}>
+                  <circle cx="12" cy="12" r="10" strokeOpacity="0.25"/>
+                  <path d="M12 2a10 10 0 0 1 10 10" />
+                </svg>
+              )}
+            </button>
+          </div>
         </form>
-
-        {/* Demo hint */}
-        <div style={{
-          marginTop: '2.5rem',
-          paddingTop: '1.5rem',
-          borderTop: `1px solid ${T.border}`,
-        }}>
-          <p style={{ fontFamily: T.fontMono, fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: '0.5rem' }}>
-            Demo credentials
-          </p>
-          <p style={{ fontFamily: T.fontMono, fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', lineHeight: 1.7 }}>
-            Contributor: ayesha@contributor.dev<br />
-            Admin: admin@codecell.dev<br />
-            Password (both): codecell123
-          </p>
-        </div>
       </div>
 
       <style>{`

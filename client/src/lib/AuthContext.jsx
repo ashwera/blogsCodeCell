@@ -18,24 +18,23 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError('');
     try {
-      // In production this calls /api/auth/login
-      // For now we mock two users so the UI is fully functional
-      await new Promise(r => setTimeout(r, 900));
-      const mockUsers = [
-        { _id: '1', name: 'Syeda Fatima', email: 'admin@codecell.dev', role: 'admin', token: 'mock-admin-token' },
-        { _id: '2', name: 'Ayesha R.',    email: 'ayesha@contributor.dev', role: 'contributor', token: 'mock-contrib-token' },
-        { _id: '3', name: 'Bilal K.',     email: 'bilal@contributor.dev',  role: 'contributor', token: 'mock-contrib-token2' },
-      ];
-      const found = mockUsers.find(u => u.email === email);
-      if (!found || password !== 'codecell123') {
-        setError('Invalid email or password.');
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        setError(data.message || 'Invalid email or password.');
         setLoading(false);
         return null;
       }
-      localStorage.setItem('cc_user', JSON.stringify(found));
-      setUser(found);
+      
+      localStorage.setItem('cc_user', JSON.stringify(data));
+      setUser(data);
       setLoading(false);
-      return found;
+      return data;
     } catch (err) {
       setError('Something went wrong. Try again.');
       setLoading(false);
@@ -48,8 +47,36 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const register = async (name, email, password) => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role: 'contributor' })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        setError(data.message || 'Error creating account.');
+        setLoading(false);
+        return null;
+      }
+      
+      localStorage.setItem('cc_user', JSON.stringify(data));
+      setUser(data);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setError('Something went wrong. Try again.');
+      setLoading(false);
+      return null;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, error, setError }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading, error, setError }}>
       {children}
     </AuthContext.Provider>
   );

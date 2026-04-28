@@ -1,8 +1,10 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../lib/AuthContext'
 import './Nav.css'
 
 const Nav = () => {
+  const { user } = useAuth()
   return (
     <header className="top-nav">
       <button 
@@ -18,9 +20,21 @@ const Nav = () => {
         <NavLink to="/blogs" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           .blogs
         </NavLink>
-        <NavLink to="/login" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-          .submit
-        </NavLink>
+        {!user && (
+          <NavLink to="/login" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+            .login
+          </NavLink>
+        )}
+        {user?.role === 'contributor' && (
+          <NavLink to="/portal" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+            .create
+          </NavLink>
+        )}
+        {user?.role === 'admin' && (
+          <NavLink to="/admin" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+            .admin dashboard
+          </NavLink>
+        )}
       </nav>
     </header>
   )

@@ -69,6 +69,7 @@ export default function PortalLayout() {
           {[
             { to: '/portal', label: '.submit', end: true },
             { to: '/portal/submissions', label: '.my work', end: false },
+            { to: '/', label: '.back to site', end: false },
           ].map(({ to, label, end }) => (
             <NavLink
               key={to}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUpRight, Check, X, ArrowLeft } from 'lucide-react';
+import { apiFetch } from '../../lib/api';
 
 /* ── Design tokens ── */
 const T = {
@@ -104,7 +105,7 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
     'linear-gradient(135deg, #111 25%, #000 25%, #000 50%, #111 50%, #111 75%, #000 75%)',
     'repeating-linear-gradient(90deg, #000, #000 12px, #111 12px, #111 24px)',
   ];
-  const patternIdx = request.id % 3;
+  const patternIdx = (request._id ? request._id.charCodeAt(request._id.length - 1) : 1) % 3;
 
   return (
     <>
@@ -185,7 +186,7 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
                 </span>
                 <span style={{ width: '4px', height: '4px', background: T.border, borderRadius: '50%' }} />
                 <span style={{ fontFamily: T.fontMono, fontSize: '0.68rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: T.muted }}>
-                  {request.author}
+                  {request.authorName}
                 </span>
               </div>
 
@@ -280,20 +281,35 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
 /* ═══════════════════════════════════════════
    REQUESTS PAGE
    ═══════════════════════════════════════════ */
-const INITIAL_REQUESTS = [
-  { id: 1, title: 'The Architecture of Nothingness', author: 'Ayesha R.', category: 'Design', date: 'Apr 25, 2026', excerpt: 'A meditation on empty space, white margins, and why the best interfaces say less — and mean more.', status: 'pending' },
-  { id: 2, title: 'Memory Leaks & Mental Models', author: 'Bilal K.', category: 'Engineering', date: 'Apr 24, 2026', excerpt: 'How our conceptual models of memory management fail us in production and what to do about it.', status: 'pending' },
-  { id: 3, title: 'Grid Systems for the Post-Screen Era', author: 'Sara M.', category: 'Design', date: 'Apr 23, 2026', excerpt: 'Thinking beyond pixels — layout systems built for ambient, spatial, and wearable surfaces.', status: 'pending' },
-  { id: 4, title: 'Abstract Syntax Trees as Art', author: 'Hamza T.', category: 'Creative Coding', date: 'Apr 21, 2026', excerpt: 'When you parse code as a tree, you see the poem hiding inside every program.', status: 'pending' },
-];
+/* ── Requests Dashboard mapped to Live API ── */
 
 export default function Requests() {
-  const [requests, setRequests] = useState(INITIAL_REQUESTS);
+  const [requests, setRequests] = useState([]);
   const [preview, setPreview] = useState(null); // request being previewed
 
-  const handle = (id, action) => {
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: action } : r));
-    setPreview(null);
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const data = await apiFetch('/blogs/all');
+        setRequests(data);
+      } catch (err) {
+        console.error('Failed to load requests:', err);
+      }
+    };
+    fetchRequests();
+  }, []);
+
+  const handle = async (id, action) => {
+    try {
+      await apiFetch(`/blogs/${id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: action })
+      });
+      setRequests(prev => prev.map(r => r._id === id ? { ...r, status: action } : r));
+      setPreview(null);
+    } catch (err) {
+      alert(err.message || 'Error updating status');
+    }
   };
 
   const pending = requests.filter(r => r.status === 'pending');
@@ -333,7 +349,7 @@ export default function Requests() {
             <SlabLabel extra={`${pending.length} pending`}>Pending Review</SlabLabel>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               {pending.map((req, i) => (
-                <div key={req.id} style={{
+                <div key={req._id} style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr auto',
                   alignItems: 'center',
@@ -346,13 +362,13 @@ export default function Requests() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                       <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.red }}>{req.category}</span>
-                      <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: T.muted }}>{req.date}</span>
+                      <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: T.muted }}>{new Date(req.createdAt).toLocaleDateString()}</span>
                     </div>
                     <h2 style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(1.25rem, 2.2vw, 1.85rem)', lineHeight: 1.15, margin: 0, color: T.text }}>
                       {req.title}
                     </h2>
                     <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: T.muted }}>
-                      by {req.author}
+                      by {req.authorName}
                     </span>
                   </div>
 
@@ -394,14 +410,14 @@ export default function Requests() {
             <SlabLabel extra={`${done.length} resolved`}>Resolved</SlabLabel>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               {done.map((req, i) => (
-                <div key={req.id} style={{
+                <div key={req._id} style={{
                   padding: '1.25rem 2rem',
                   borderBottom: i < done.length - 1 ? `1px solid ${T.border}` : 'none',
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem',
                 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                     <span style={{ fontFamily: T.fontDisplay, fontSize: '1.05rem', lineHeight: 1.2, color: T.text }}>{req.title}</span>
-                    <span style={{ fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: T.muted }}>by {req.author}</span>
+                    <span style={{ fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: T.muted }}>by {req.authorName}</span>
                   </div>
                   <span style={{
                     fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase',
@@ -432,8 +448,8 @@ export default function Requests() {
         <BlogPreview
           request={preview}
           onClose={() => setPreview(null)}
-          onAccept={() => handle(preview.id, 'published')}
-          onDecline={() => handle(preview.id, 'rejected')}
+          onAccept={() => handle(preview._id, 'published')}
+          onDecline={() => handle(preview._id, 'rejected')}
         />
       )}
     </>

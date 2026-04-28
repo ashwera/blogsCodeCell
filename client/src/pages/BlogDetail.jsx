@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Share2 } from 'lucide-react';
+import { apiFetch } from '../lib/api';
 
 /* ── Design tokens ── */
 const T = {
@@ -36,15 +37,27 @@ export default function BlogDetail() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Mock blog data
-  const blog = {
-    title: 'The Architecture of Nothingness',
-    author: 'Ayesha R.',
-    category: 'Design',
-    date: 'Apr 25, 2026',
-    excerpt: 'A meditation on empty space, white margins, and why the best interfaces say less — and mean more.',
-    readTime: '6 min read',
-  };
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDetail = async () => {
+      try {
+        const data = await apiFetch(`/blogs/${id}`);
+        setBlog(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
+  }, [id]);
+
+  if (loading) return <div style={{ background: '#000', height: '100vh', display: 'grid', placeItems: 'center', color: '#fff' }}>Loading...</div>;
+  if (!blog) return <div style={{ background: '#000', height: '100vh', display: 'grid', placeItems: 'center', color: '#fff' }}>Blog not found.</div>;
+  
+  const readTime = Math.max(1, Math.ceil(blog.content.length / 1000)) + ' min read';
 
   return (
     <div style={{ background: '#000000', minHeight: '100vh', paddingBottom: '10rem' }}>
@@ -107,9 +120,9 @@ export default function BlogDetail() {
           {blog.title}
         </h1>
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>By {blog.author}</span>
+          <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>By {blog.authorName}</span>
           <span style={{ width: '4px', height: '4px', background: T.border, borderRadius: '50%' }} />
-          <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>{blog.date}</span>
+          <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>{new Date(blog.createdAt).toLocaleDateString()}</span>
         </div>
       </section>
 
@@ -138,13 +151,13 @@ export default function BlogDetail() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem', padding: '1rem 0', borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}` }}>
           <Clock size={14} color={T.muted} />
           <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: T.muted }}>
-            {blog.readTime}
+            {readTime}
           </span>
         </div>
 
         {/* Content paragraphs */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          {BODY_LOREM.split('\n\n').map((para, i) => (
+          {blog.content.split('\n\n').map((para, i) => (
             <p key={i} style={{
               fontFamily: T.fontBody,
               fontSize: '1.15rem',
@@ -159,7 +172,7 @@ export default function BlogDetail() {
 
         {/* Tags */}
         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '5rem', flexWrap: 'wrap' }}>
-          {['Design', 'Minimalism', 'Web'].map(tag => (
+          {(blog.tags && blog.tags.length > 0 ? blog.tags : [blog.category]).map(tag => (
             <span key={tag} style={{
               fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase',
               color: T.muted, border: `1px solid ${T.border}`, borderRadius: '999px', padding: '0.35rem 1rem',

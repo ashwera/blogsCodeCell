@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { submitBlog, getMyBlogs, getAllBlogs, updateBlogStatus } = require('../controllers/blogController');
+const { submitBlog, getMyBlogs, getAllBlogs, updateBlogStatus, getPublishedBlogs, getBlogById } = require('../controllers/blogController');
 const { protect, adminOnly, contributorOrAdmin } = require('../middleware/authMiddleware');
+
+// Public routes
+router.get('/', getPublishedBlogs);
+router.get('/:id', getBlogById);
 
 // Contributor routes
 router.post('/', protect, contributorOrAdmin, submitBlog);

@@ -60,6 +60,7 @@ export default function AdminLayout() {
           {[
             { to: '/admin', label: '.overview', end: true },
             { to: '/admin/requests', label: '.requests', end: false },
+            { to: '/', label: '.back to site', end: false },
           ].map(({ to, label, end }) => (
             <NavLink
               key={to}

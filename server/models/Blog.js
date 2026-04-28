@@ -40,7 +40,7 @@ const blogSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'published', 'rejected'],
+      enum: ['draft', 'pending', 'published', 'rejected', 'archived'],
       default: 'pending',
     },
     adminNote: {

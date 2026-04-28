@@ -3,13 +3,18 @@ import { ArrowUpRight } from "lucide-react";
 
 const ButtonWithIconDemo = () => {
   return (
-    <Button className="relative text-sm font-medium rounded-full h-12 p-1 ps-6 pe-14 group transition-all duration-500 hover:ps-16 hover:pe-6 w-fit overflow-hidden cursor-pointer">
-      <span className="relative z-10 transition-all duration-500 group-hover:translate-x-6">
+    <Button
+      type="button"
+      variant="ghost"
+      className="group relative inline-flex !h-12 !w-[176px] overflow-hidden !rounded-full !bg-[#f2f2f2] !p-0 !text-[#111111] transition-colors duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:!bg-[#e8e8e8] focus-visible:!ring-0"
+    >
+      <span className="absolute left-0 z-10 flex w-[128px] items-center justify-center text-sm font-medium leading-none transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-12">
         View Blogs
       </span>
-      <div className="absolute right-1 w-10 h-10 bg-background text-foreground rounded-full flex items-center justify-center transition-all duration-500 group-hover:right-[calc(100%-60px)] group-hover:rotate-45">
+
+      <span className="absolute right-2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-[#111111] text-[#f5f5f5] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-[120px] group-hover:rotate-45">
         <ArrowUpRight size={16} />
-      </div>
+      </span>
     </Button>
   );
 };

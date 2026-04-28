@@ -68,4 +68,27 @@ const updateBlogStatus = async (req, res) => {
   }
 };
 
-module.exports = { submitBlog, getMyBlogs, getAllBlogs, updateBlogStatus };
+// @route  GET /api/blogs
+// @access Public
+const getPublishedBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ status: 'published' }).sort({ createdAt: -1 });
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @route  GET /api/blogs/:id
+// @access Public
+const getBlogById = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) return res.status(404).json({ message: 'Blog not found' });
+    res.json(blog);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { submitBlog, getMyBlogs, getAllBlogs, updateBlogStatus, getPublishedBlogs, getBlogById };

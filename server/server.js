@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
+require('./utils/cronJobs');
 
 // Connect to database
 connectDB();

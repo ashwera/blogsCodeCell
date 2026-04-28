@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../lib/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { ArrowUpRight, Check } from 'lucide-react';
+import { apiFetch } from '../../lib/api';
 
 /* ── Design tokens ── */
 const T = {
@@ -156,10 +157,24 @@ export default function PortalSubmit() {
     e.preventDefault();
     if (!canSubmit) return;
     setSubmitting(true);
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1200));
-    setSubmitting(false);
-    setSubmitted(true);
+    try {
+      await apiFetch('/blogs', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: form.title,
+          excerpt: form.excerpt,
+          content: form.content,
+          category: form.category,
+          tags: form.tags,
+          coverImage: form.coverImage,
+        }),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      alert(err.message || 'Failed to submit blog');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const reset = () => {
@@ -184,6 +199,41 @@ export default function PortalSubmit() {
           New Piece
         </h1>
       </header>
+
+      {/* ── Back to site button ── */}
+      <div style={{ marginBottom: '2rem' }}>
+        <NavLink
+          to="/"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            padding: '0.6rem 1.2rem',
+            background: 'rgba(255,255,255,0.04)',
+            border: `1px solid ${T.border}`,
+            borderRadius: '999px',
+            color: T.muted,
+            fontFamily: T.fontMono,
+            fontSize: '0.72rem',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            textDecoration: 'none',
+            transition: 'all 0.25s',
+            cursor: 'pointer',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+            e.currentTarget.style.color = T.text;
+            e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = T.border;
+            e.currentTarget.style.color = T.muted;
+            e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+          }}
+        >
+          ← back to site
+        </NavLink>
+      </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 

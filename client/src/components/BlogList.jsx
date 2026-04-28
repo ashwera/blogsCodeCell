@@ -1,29 +1,36 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import BlogCard from './BlogCard'
+import { apiFetch } from '../lib/api'
 import './BlogList.css'
 
-const DUMMY_BLOGS = [
-  { id: 1, title: 'The Architecture of Nothingness', category: 'Design', date: 'Oct 12, 2026' },
-  { id: 2, title: 'Memory Leaks & Mental Models', category: 'Engineering', date: 'Oct 05, 2026' },
-  { id: 3, title: 'Typography as an API', category: 'Creative Coding', date: 'Sep 28, 2026' },
-  { id: 4, title: 'State Machines in the Wild', category: 'Engineering', date: 'Sep 15, 2026' },
-  { id: 5, title: 'Grid Systems for the Post-Screen Era', category: 'Design', date: 'Sep 02, 2026' },
-  { id: 6, title: 'Abstract Syntax Trees as Art', category: 'Creative Coding', date: 'Aug 21, 2026' },
-]
+/* ── Live endpoints replace dummy data ── */
 
 const BlogList = ({ onBack, focusSearch = false }) => {
   const [query, setQuery] = useState('')
+  const [blogs, setBlogs] = useState([])
   const searchInputRef = useRef(null)
 
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const data = await apiFetch('/blogs');
+        setBlogs(data);
+      } catch (err) {
+        console.error('Error finding blogs', err);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
   const filteredBlogs = useMemo(() => {
-    if (!query.trim()) return DUMMY_BLOGS
+    if (!query.trim()) return blogs
     const normalized = query.toLowerCase()
-    return DUMMY_BLOGS.filter(
+    return blogs.filter(
       (blog) =>
         blog.title.toLowerCase().includes(normalized) ||
         blog.category.toLowerCase().includes(normalized),
     )
-  }, [query])
+  }, [query, blogs])
 
   useEffect(() => {
     if (focusSearch && searchInputRef.current) {
@@ -60,11 +67,11 @@ const BlogList = ({ onBack, focusSearch = false }) => {
         ) : (
           filteredBlogs.map((blog, idx) => (
             <BlogCard
-              key={blog.id}
-              id={blog.id}
+              key={blog._id}
+              id={blog._id}
               title={blog.title}
               category={blog.category}
-              date={blog.date}
+              date={new Date(blog.createdAt).toLocaleDateString()}
               imageIndex={idx}
             />
           ))

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const generateToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  jwt.sign({ id }, process.env.JWT_SECRET || 'codecell_secret_key_fallback_123', { expiresIn: '7d' });
 
 // @route  POST /api/auth/register
 // @desc   Register a new contributor (admin creates them)

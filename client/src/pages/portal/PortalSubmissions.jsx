@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../lib/AuthContext';
+import { NavLink } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
+import { apiFetch } from '../../lib/api';
 
 const T = {
   fontMono: 'var(--font-accent)',
@@ -14,39 +16,7 @@ const T = {
   slabBg: 'rgba(255,255,255,0.025)',
 };
 
-/* ── Mock submission history (replace with API call) ── */
-const MOCK_SUBMISSIONS = [
-  {
-    id: 1,
-    title: 'The Architecture of Nothingness',
-    excerpt: 'A meditation on empty space, white margins, and why the best interfaces say less — and mean more.',
-    category: 'Design',
-    tags: ['Design', 'Editorial'],
-    status: 'pending',
-    date: 'Apr 25, 2026',
-    adminNote: '',
-  },
-  {
-    id: 2,
-    title: 'Why Brutalism Works in 2026',
-    excerpt: 'Revisiting the raw, unpolished aesthetic — and why it resonates more than ever in a world of perfect gradients.',
-    category: 'Design',
-    tags: ['Design', 'Culture'],
-    status: 'published',
-    date: 'Apr 18, 2026',
-    adminNote: '',
-  },
-  {
-    id: 3,
-    title: 'The Hidden Cost of Beautiful Code',
-    excerpt: 'Clean code is a moral ideal, not an engineering one. Let\'s talk about when it becomes a liability.',
-    category: 'Engineering',
-    tags: ['Engineering'],
-    status: 'rejected',
-    date: 'Apr 10, 2026',
-    adminNote: 'Great perspective, but needs more concrete examples. Please revise and resubmit.',
-  },
-];
+/* ── Real API fetch approach replaces Mock. ── */
 
 const STATUS_CONFIG = {
   pending:   { label: 'Pending Review', color: T.red,                  borderColor: 'rgba(193,18,31,0.4)', bg: 'rgba(193,18,31,0.08)' },
@@ -71,7 +41,22 @@ function StatusPill({ status }) {
 
 export default function PortalSubmissions() {
   const { user } = useAuth();
-  const [subs] = useState(MOCK_SUBMISSIONS);
+  const [subs, setSubs] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchSubs = async () => {
+      try {
+        const data = await apiFetch('/blogs/mine');
+        setSubs(data);
+      } catch (err) {
+        console.error('Failed to fetch subs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSubs();
+  }, []);
 
   const counts = {
     total:     subs.length,
@@ -92,6 +77,41 @@ export default function PortalSubmissions() {
           My Work
         </h1>
       </header>
+
+      {/* ── Back to site button ── */}
+      <div style={{ marginBottom: '2rem' }}>
+        <NavLink
+          to="/"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            padding: '0.6rem 1.2rem',
+            background: 'rgba(255,255,255,0.04)',
+            border: `1px solid ${T.border}`,
+            borderRadius: '999px',
+            color: T.muted,
+            fontFamily: T.fontMono,
+            fontSize: '0.72rem',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            textDecoration: 'none',
+            transition: 'all 0.25s',
+            cursor: 'pointer',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+            e.currentTarget.style.color = T.text;
+            e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = T.border;
+            e.currentTarget.style.color = T.muted;
+            e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+          }}
+        >
+          ← back to site
+        </NavLink>
+      </div>
 
       {/* ── Stats slab ── */}
       <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
@@ -133,7 +153,7 @@ export default function PortalSubmissions() {
 
           {subs.map((sub, i) => (
             <div
-              key={sub.id}
+              key={sub._id}
               style={{
                 padding: '1.75rem 2rem',
                 borderBottom: i < subs.length - 1 ? `1px solid ${T.border}` : 'none',
@@ -153,7 +173,7 @@ export default function PortalSubmissions() {
                     {sub.category}
                   </span>
                   <span style={{ fontFamily: T.fontMono, fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
-                    {sub.date}
+                    {new Date(sub.createdAt).toLocaleDateString()}
                   </span>
                 </div>
 
