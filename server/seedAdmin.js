@@ -13,14 +13,19 @@ const seedAdmin = async () => {
       process.exit();
     }
 
+    const adminPassword = process.env.ADMIN_PASSWORD || 'codecell123';
+    if (adminPassword === 'codecell123') {
+      console.warn('WARNING: Using default password for admin account.');
+    }
+
     await User.create({
       name: 'Admin User',
       email: 'admin@codecell.dev',
-      password: 'codecell123',
+      password: adminPassword,
       role: 'admin'
     });
 
-    console.log('Admin created successfully! Email: admin@codecell.dev, Password: codecell123');
+    console.log(`Admin created successfully! Email: admin@codecell.dev, Password: ${adminPassword === 'codecell123' ? 'codecell123' : '[HIDDEN]'}`);
     process.exit();
   } catch (err) {
     console.error(err);

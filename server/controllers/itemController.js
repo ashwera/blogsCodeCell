@@ -1,4 +1,10 @@
 const Item = require('../models/Item');
+const { z } = require('zod');
+
+const itemSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required')
+});
 
 // @desc    Get items
 // @route   GET /api/items
@@ -8,7 +14,8 @@ const getItems = async (req, res) => {
     const items = await Item.find();
     res.status(200).json(items);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -16,19 +23,20 @@ const getItems = async (req, res) => {
 // @route   POST /api/items
 // @access  Public
 const setItem = async (req, res) => {
-  if (!req.body.name || !req.body.description) {
-    res.status(400).json({ message: 'Please add a name and description field' });
-    return;
+  const parsed = itemSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ message: 'Please add a name and description field', errors: parsed.error.errors });
   }
 
   try {
     const item = await Item.create({
-      name: req.body.name,
-      description: req.body.description,
+      name: parsed.data.name,
+      description: parsed.data.description,
     });
     res.status(201).json(item);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 

@@ -1,13 +1,25 @@
 const Blog = require('../models/Blog');
 const User = require('../models/User');
+const { z } = require('zod');
+
+const submitBlogSchema = z.object({
+  title: z.string().min(1),
+  excerpt: z.string().min(1),
+  content: z.string().min(1),
+  category: z.string().min(1),
+  tags: z.string().optional(),
+  coverImage: z.string().optional()
+});
 
 // @route  POST /api/blogs
 // @access Contributor + Admin
 const submitBlog = async (req, res) => {
   try {
-    const { title, excerpt, content, category, tags, coverImage } = req.body;
-    if (!title || !excerpt || !content || !category)
-      return res.status(400).json({ message: 'Title, excerpt, content and category are required' });
+    const parsed = submitBlogSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: 'Validation error', errors: parsed.error.errors });
+    }
+    const { title, excerpt, content, category, tags, coverImage } = parsed.data;
 
     // Require a permanent username before allowing any submission
     const userDoc = await User.findOne({ uid: req.user.uid });
@@ -29,7 +41,8 @@ const submitBlog = async (req, res) => {
 
     res.status(201).json(blog);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -40,7 +53,8 @@ const getMyBlogs = async (req, res) => {
     const blogs = await Blog.find({ author: req.user.uid }).sort({ createdAt: -1 });
     res.json(blogs);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -51,7 +65,8 @@ const getAllBlogs = async (req, res) => {
     const blogs = await Blog.find().sort({ createdAt: -1 });
     res.json(blogs);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -71,7 +86,8 @@ const updateBlogStatus = async (req, res) => {
     if (!blog) return res.status(404).json({ message: 'Blog not found' });
     res.json(blog);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -82,7 +98,8 @@ const getPublishedBlogs = async (req, res) => {
     const blogs = await Blog.find({ status: 'published' }).sort({ createdAt: -1 });
     res.json(blogs);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -94,7 +111,8 @@ const getBlogById = async (req, res) => {
     if (!blog) return res.status(404).json({ message: 'Blog not found' });
     res.json(blog);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -110,7 +128,8 @@ const getBlogStats = async (req, res) => {
     ]);
     res.json({ total, published, pending, rejected });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 

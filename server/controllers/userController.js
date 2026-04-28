@@ -1,4 +1,9 @@
 const User = require('../models/User');
+const { z } = require('zod');
+
+const usernameSchema = z.object({
+  username: z.string().trim().min(3).max(30).regex(/^[a-zA-Z0-9_-]+$/, 'Username must contain only letters, numbers, _ or -')
+});
 
 // @route  GET /api/users/me
 // @access Protected
@@ -12,7 +17,8 @@ const getMe = async (req, res) => {
     }
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -21,17 +27,15 @@ const getMe = async (req, res) => {
 // Sets the username exactly once. Rejects if already set.
 const setUsername = async (req, res) => {
   try {
-    const { username } = req.body;
-    if (!username || typeof username !== 'string' || !username.trim())
-      return res.status(400).json({ message: 'Username is required' });
-
-    const cleaned = username.trim();
-
-    // Validate: 3–30 chars, letters/numbers/underscores/hyphens only
-    if (!/^[a-zA-Z0-9_-]{3,30}$/.test(cleaned))
+    const parsed = usernameSchema.safeParse(req.body);
+    if (!parsed.success) {
       return res.status(400).json({
         message: 'Username must be 3–30 characters and contain only letters, numbers, _ or -',
+        errors: parsed.error.errors
       });
+    }
+
+    const cleaned = parsed.data.username;
 
     let user = await User.findOne({ uid: req.user.uid });
     if (!user) {
@@ -54,7 +58,8 @@ const setUsername = async (req, res) => {
 
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 

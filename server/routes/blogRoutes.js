@@ -5,19 +5,20 @@ const { protect, adminOnly, contributorOrAdmin } = require('../middleware/authMi
 
 // Public routes
 router.get('/', getPublishedBlogs);
+router.get('/:id([0-9a-fA-F]{24})', getBlogById);
 
-// Static named routes MUST come before /:id to avoid Express treating 'mine', 'all', 'stats' as IDs
-router.get('/mine', protect, contributorOrAdmin, getMyBlogs);
-router.get('/all', protect, adminOnly, getAllBlogs);
-router.get('/stats', protect, adminOnly, getBlogStats);
+// Default-deny for the rest
+router.use(protect);
+
+// Static named routes
+router.get('/mine', contributorOrAdmin, getMyBlogs);
+router.get('/all', adminOnly, getAllBlogs);
+router.get('/stats', adminOnly, getBlogStats);
 
 // Contributor routes
-router.post('/', protect, contributorOrAdmin, submitBlog);
+router.post('/', contributorOrAdmin, submitBlog);
 
 // Admin routes
-router.patch('/:id/status', protect, adminOnly, updateBlogStatus);
-
-// Parameterized routes LAST
-router.get('/:id', getBlogById);
+router.patch('/:id/status', adminOnly, updateBlogStatus);
 
 module.exports = router;
