@@ -94,12 +94,20 @@ function AnalyticsCell({ label, value, bordered = false }) {
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ total: '—', published: '—', pending: '—', rejected: '—' });
+  const [analytics, setAnalytics] = useState({ total_views: '—', views_this_month: '—', avg_read_time: '—', top_category: '—' });
   const [recentActivity, setRecentActivity] = useState([]);
 
   useEffect(() => {
+    // Existing content stats
     apiFetch('/blogs/stats')
       .then(data => setStats(data))
       .catch(err => console.error('Stats fetch failed:', err));
+
+    // NEW SITE ANALYTICS
+    fetch('http://localhost:8080/stats')
+      .then(res => res.json())
+      .then(data => setAnalytics(data))
+      .catch(err => console.error('Analytics fetch failed:', err));
 
     apiFetch('/blogs/all')
       .then(data => {
@@ -170,10 +178,10 @@ export default function Dashboard() {
           <SlabLabel>Site Analytics</SlabLabel>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
-          <AnalyticsCell label="Total Views"  value="12.4k" bordered />
-          <AnalyticsCell label="This Month"   value="3.1k"  bordered />
-          <AnalyticsCell label="Avg Read Time" value="4.2m" bordered />
-          <AnalyticsCell label="Top Category" value="Design" />
+          <AnalyticsCell label="Total Views"  value={analytics.total_views || '—'} bordered />
+          <AnalyticsCell label="This Month"   value={analytics.views_this_month || '—'}  bordered />
+          <AnalyticsCell label="Avg Read Time" value={analytics.avg_read_time ? `${analytics.avg_read_time}s` : '—'} bordered />
+          <AnalyticsCell label="Top Category" value={analytics.top_category || '—'} />
         </div>
       </Slab>
 

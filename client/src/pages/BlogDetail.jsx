@@ -41,10 +41,19 @@ export default function BlogDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const startTime = Date.now();
     const fetchDetail = async () => {
       try {
         const data = await apiFetch(`/blogs/${id}`);
         setBlog(data);
+        
+        // Log VIEW event
+        fetch('http://localhost:8080/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ blog_id: id, type: 'view' })
+        }).catch(err => console.error('View log failed:', err));
+
       } catch (err) {
         console.error(err);
       } finally {
@@ -52,6 +61,17 @@ export default function BlogDetail() {
       }
     };
     fetchDetail();
+
+    return () => {
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+      if (timeSpent > 5) { // Only log if they stayed > 5s
+        fetch('http://localhost:8080/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ blog_id: id, type: 'read', time_spent: timeSpent })
+        }).catch(err => console.error('Read log failed:', err));
+      }
+    };
   }, [id]);
 
   if (loading) return <div style={{ background: '#000', height: '100vh', display: 'grid', placeItems: 'center', color: '#fff' }}>Loading...</div>;
