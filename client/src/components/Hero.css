@@ -100,7 +100,7 @@
   .hero-ascii {
     padding-left: 1rem;
     font-size: 0.85rem;
-    opacity: 0.9;
+    opacity: 0.98;
      filter: blur(0.3px);
   }
 }
