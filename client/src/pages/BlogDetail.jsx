@@ -71,7 +71,7 @@ export default function BlogDetail() {
         backdropFilter: scrolled ? 'blur(18px)' : 'none',
         WebkitBackdropFilter: scrolled ? 'blur(18px)' : 'none',
         padding: '1rem 5vw',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
         transition: 'all 0.4s ease',
       }}>
         <button 
@@ -97,7 +97,7 @@ export default function BlogDetail() {
       {/* ── Hero section ── */}
       <section style={{
         width: '100%',
-        height: '70vh',
+        minHeight: '60vh',
         background: 'radial-gradient(circle at 30% 40%, #1a1a1a 0%, #000 100%)',
         display: 'flex',
         flexDirection: 'column',
@@ -119,7 +119,7 @@ export default function BlogDetail() {
         }}>
           {blog.title}
         </h1>
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
           <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>By {blog.authorName}</span>
           <span style={{ width: '4px', height: '4px', background: T.border, borderRadius: '50%' }} />
           <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>{new Date(blog.createdAt).toLocaleDateString()}</span>
@@ -130,7 +130,7 @@ export default function BlogDetail() {
       <main style={{
         maxWidth: '740px',
         margin: '0 auto',
-        padding: '5rem 2rem',
+        padding: 'clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem)',
       }}>
         
         {/* Excerpt Lead */}
@@ -142,13 +142,13 @@ export default function BlogDetail() {
           marginBottom: '4rem',
           fontStyle: 'italic',
           borderLeft: `2px solid ${T.red}`,
-          paddingLeft: '2rem',
+          paddingLeft: 'clamp(1rem, 4vw, 2rem)',
         }}>
           {blog.excerpt}
         </p>
 
         {/* Info bar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem', padding: '1rem 0', borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '4rem', padding: '1rem 0', borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}` }}>
           <Clock size={14} color={T.muted} />
           <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: T.muted }}>
             {readTime}
@@ -160,8 +160,8 @@ export default function BlogDetail() {
           {blog.content.split('\n\n').map((para, i) => (
             <p key={i} style={{
               fontFamily: T.fontBody,
-              fontSize: '1.15rem',
-              lineHeight: 1.95,
+              fontSize: 'clamp(1rem, 2.4vw, 1.15rem)',
+              lineHeight: 1.9,
               color: 'rgba(255,255,255,0.75)',
               letterSpacing: '0.012em',
             }}>

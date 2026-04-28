@@ -5,9 +5,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 5vw;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 5vw);
   z-index: 30;
   pointer-events: auto;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -43,6 +45,13 @@
   border-radius: 999px;
   padding: 0.45rem 0.55rem;
   backdrop-filter: blur(14px);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-link {
@@ -62,4 +71,25 @@
 .nav-link.active {
   color: #C1121F;
   background: var(--nav-hover);
+}
+
+@media (max-width: 768px) {
+  .top-nav {
+    align-items: stretch;
+  }
+
+  .brand-btn {
+    width: fit-content;
+  }
+
+  .nav-tabs {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .nav-link {
+    white-space: nowrap;
+    font-size: 0.85rem;
+    padding: 0.7rem 0.9rem;
+  }
 }

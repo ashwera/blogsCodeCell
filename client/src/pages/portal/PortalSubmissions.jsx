@@ -66,7 +66,7 @@ export default function PortalSubmissions() {
   };
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 5rem)', padding: '4rem 5vw 8rem', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ minHeight: 'calc(100vh - 5rem)', padding: 'clamp(2rem, 5vw, 4rem) 5vw 8rem', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
       {/* ── Header ── */}
       <header style={{ marginBottom: '0.5rem' }}>
@@ -114,7 +114,7 @@ export default function PortalSubmissions() {
       </div>
 
       {/* ── Stats slab ── */}
-      <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
         {[
           { label: 'Total', value: counts.total,     red: false },
           { label: 'Pending', value: counts.pending, red: counts.pending > 0 },
@@ -123,7 +123,8 @@ export default function PortalSubmissions() {
         ].map(({ label, value, red }, i) => (
           <div key={label} style={{
             padding: '1.5rem 2rem',
-            borderRight: i < 3 ? `1px solid ${T.border}` : 'none',
+            borderRight: '1px solid transparent',
+            borderInlineEnd: i < 3 ? `1px solid ${T.border}` : 'none',
             display: 'flex', flexDirection: 'column', gap: '0.3rem',
           }}>
             <span style={{ fontFamily: T.fontMono, fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted }}>{label}</span>
@@ -142,7 +143,7 @@ export default function PortalSubmissions() {
       ) : (
         <div style={{ border: `1px solid ${T.border}`, background: T.slabBg }}>
           {/* Slab header */}
-          <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <p style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: T.muted, margin: 0 }}>
               Submission Log
             </p>
@@ -160,6 +161,7 @@ export default function PortalSubmissions() {
                 display: 'flex',
                 gap: '1.5rem',
                 alignItems: 'flex-start',
+                flexWrap: 'wrap',
                 transition: 'background 0.2s',
               }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
@@ -168,7 +170,7 @@ export default function PortalSubmissions() {
               {/* Left — content */}
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {/* Category + date */}
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
                   <span style={{ fontFamily: T.fontMono, fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.red }}>
                     {sub.category}
                   </span>
@@ -222,7 +224,7 @@ export default function PortalSubmissions() {
               </div>
 
               {/* Right — status */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.75rem', flexShrink: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem', flexShrink: 0, width: '100%', maxWidth: '180px' }}>
                 <StatusPill status={sub.status} />
                 {sub.status === 'rejected' && (
                   <button

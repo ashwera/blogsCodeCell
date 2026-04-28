@@ -95,7 +95,14 @@ button {
 .container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 5vw;
+  padding: 0 clamp(1rem, 4vw, 5vw);
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }
 
 /* Page Transitions */

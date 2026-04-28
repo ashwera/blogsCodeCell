@@ -188,7 +188,7 @@ export default function PortalSubmit() {
   const readTime = Math.max(1, Math.ceil(charCount / 1000));
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 5rem)', padding: '4rem 5vw 8rem', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ minHeight: 'calc(100vh - 5rem)', padding: 'clamp(2rem, 5vw, 4rem) 5vw 8rem', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
       {/* ── Header ── */}
       <header style={{ marginBottom: '0.5rem' }}>
@@ -242,10 +242,10 @@ export default function PortalSubmit() {
           border: `1px solid ${T.border}`,
           background: T.slabBg,
           display: 'grid',
-          gridTemplateColumns: '1fr auto',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         }}>
           {/* Title */}
-          <div style={{ padding: '2rem', borderRight: `1px solid ${T.border}` }}>
+          <div style={{ padding: 'clamp(1.25rem, 4vw, 2rem)', borderRight: `1px solid ${T.border}` }}>
             <p style={{ fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: T.muted, marginBottom: '0.75rem' }}>
               Title
             </p>
@@ -272,7 +272,7 @@ export default function PortalSubmit() {
           </div>
 
           {/* Category pills */}
-          <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '200px' }}>
+          <div style={{ padding: 'clamp(1.25rem, 4vw, 2rem)', display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: 0 }}>
             <p style={{ fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: T.muted, marginBottom: '0.25rem' }}>
               Category
             </p>
@@ -305,7 +305,7 @@ export default function PortalSubmit() {
         </div>
 
         {/* ── Row 2: Excerpt ── */}
-        <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, padding: '2rem' }}>
+        <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, padding: 'clamp(1.25rem, 4vw, 2rem)' }}>
           <Field label="Excerpt" hint="A one-line hook for the reader">
             <textarea
               id="submit-excerpt"
@@ -333,7 +333,7 @@ export default function PortalSubmit() {
         {/* ── Row 3: Content ── */}
         <div style={{ border: `1px solid ${T.border}`, background: T.slabBg }}>
           {/* Slab header */}
-          <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '1.25rem clamp(1.25rem, 4vw, 2rem)', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <p style={{ fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: T.muted, margin: 0 }}>
               Article Body
             </p>
@@ -346,7 +346,7 @@ export default function PortalSubmit() {
               </span>
             </div>
           </div>
-          <div style={{ padding: '2rem' }}>
+          <div style={{ padding: 'clamp(1.25rem, 4vw, 2rem)' }}>
             <textarea
               id="submit-content"
               placeholder="Write your full article here. Markdown will be supported on publish…"
@@ -371,8 +371,8 @@ export default function PortalSubmit() {
         </div>
 
         {/* ── Row 4: Tags + Cover ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-          <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, padding: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, padding: 'clamp(1.25rem, 4vw, 2rem)' }}>
             <Field label="Tags" hint="Comma separated">
               <input
                 id="submit-tags"
@@ -405,7 +405,7 @@ export default function PortalSubmit() {
             </Field>
           </div>
 
-          <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, padding: '2rem' }}>
+          <div style={{ border: `1px solid ${T.border}`, background: T.slabBg, padding: 'clamp(1.25rem, 4vw, 2rem)' }}>
             <Field label="Cover Image URL" hint="Optional">
               <input
                 id="submit-cover"
@@ -446,7 +446,7 @@ export default function PortalSubmit() {
           background: 'rgba(0,0,0,0.88)',
           backdropFilter: 'blur(18px)',
           WebkitBackdropFilter: 'blur(18px)',
-          padding: '1.25rem 2rem',
+          padding: '1.25rem clamp(1rem, 4vw, 2rem)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -464,7 +464,7 @@ export default function PortalSubmit() {
           </div>
 
           {/* Required fields indicator */}
-          <div style={{ display: 'flex', gap: '0.5rem', flex: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', flex: '1 1 240px', justifyContent: 'center', flexWrap: 'wrap' }}>
             {[
               { label: 'Title', done: !!form.title.trim() },
               { label: 'Excerpt', done: !!form.excerpt.trim() },
