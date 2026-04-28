@@ -1,0 +1,17 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://kisha-volcanologic-motherly.ngrok-free.dev/api/$1"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/admin/",
+      "permanent": true
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}
