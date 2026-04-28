@@ -5,9 +5,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 5vw;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 5vw);
   z-index: 30;
   pointer-events: auto;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -15,15 +17,15 @@
   font-size: 0.85rem;
   letter-spacing: 0.25em;
   text-transform: lowercase;
-  color: var(--text-muted);
+  color: #C1121F;
   cursor: pointer;
 }
 
 .brand-btn {
   display: inline-flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--nav-panel);
+  border: 1px solid var(--nav-border);
   border-radius: 999px;
   padding: 0.75rem 1.5rem;
   backdrop-filter: blur(14px);
@@ -31,18 +33,25 @@
 }
 
 .brand-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--nav-hover);
   color: var(--text-color);
 }
 
 .nav-tabs {
   display: inline-flex;
   gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--nav-panel);
+  border: 1px solid var(--nav-border);
   border-radius: 999px;
   padding: 0.45rem 0.55rem;
   backdrop-filter: blur(14px);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-link {
@@ -56,10 +65,31 @@
 
 .nav-link:hover {
   color: var(--text-color);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--nav-hover);
 }
 
 .nav-link.active {
   color: #C1121F;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--nav-hover);
+}
+
+@media (max-width: 768px) {
+  .top-nav {
+    align-items: stretch;
+  }
+
+  .brand-btn {
+    width: fit-content;
+  }
+
+  .nav-tabs {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .nav-link {
+    white-space: nowrap;
+    font-size: 0.85rem;
+    padding: 0.7rem 0.9rem;
+  }
 }

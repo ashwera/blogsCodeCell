@@ -41,7 +41,9 @@ export default function PortalLayout() {
       <header style={{
         position: 'fixed', top: 0, left: 0, right: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '1.5rem 5vw',
+        padding: '1rem 5vw',
+        gap: '1rem',
+        flexWrap: 'wrap',
         zIndex: 30,
         background: scrolled ? 'rgba(0,0,0,0.82)' : 'transparent',
         borderBottom: scrolled ? `1px solid ${T.border}` : '1px solid transparent',
@@ -64,6 +66,8 @@ export default function PortalLayout() {
           padding: '0.45rem 0.55rem',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
+          maxWidth: '100%',
+          overflowX: 'auto',
         }}>
           {[
             { to: '/portal', label: '.submit', end: true },

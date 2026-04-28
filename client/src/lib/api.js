@@ -23,7 +23,9 @@ export const apiFetch = async (endpoint, options = {}) => {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`/api${endpoint}`, {
+  // Use ngrok URL as base for API requests
+  const BASE_URL = 'https://kisha-volcanologic-motherly.ngrok-free.dev/api';
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,
   });
