@@ -9,7 +9,7 @@ export default function AdminLayout() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    if (!user) { navigate('/login', { replace: true }); return; }
+    if (!user || user.role !== 'admin') { navigate('/login', { replace: true }); return; }
   }, [user, navigate]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function AdminLayout() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
   
-  if (!user) return null;
+  if (!user || user.role !== 'admin') return null;
 
   return (
     <div style={{ background: 'var(--bg-color)', color: 'var(--text-color)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-primary)' }}>

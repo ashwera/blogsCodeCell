@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth } from '../firebase';
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, getIdTokenResult } from 'firebase/auth';
 
 const AuthContext = createContext(null);
 
@@ -10,14 +10,24 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Map firebase user and inject a default role so the Nav works
-        setUser({
-          uid: currentUser.uid,
-          email: currentUser.email,
-          role: 'admin' // Granting admin role to all authenticated users for now
-        });
+        try {
+          const tokenResult = await getIdTokenResult(currentUser);
+          const role = tokenResult?.claims?.admin ? 'admin' : 'contributor';
+          setUser({
+            uid: currentUser.uid,
+            email: currentUser.email,
+            role
+          });
+        } catch (err) {
+          console.error('Failed to fetch custom claims:', err);
+          setUser({
+            uid: currentUser.uid,
+            email: currentUser.email,
+            role: 'contributor'
+          });
+        }
       } else {
         setUser(null);
       }
