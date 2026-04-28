@@ -4,6 +4,7 @@
   gap: 1.5rem;
   cursor: pointer;
   height: 100%;
+  min-width: 0;
 }
 
 .card-visual {
@@ -44,6 +45,7 @@
   flex-direction: column;
   gap: 0.75rem;
   flex: 1;
+  min-width: 0;
 }
 
 .card-meta {
@@ -63,6 +65,7 @@
   font-size: 1.25rem;
   color: #C1121F;
   line-height: 1.2;
+  overflow-wrap: anywhere;
   transition: color var(--transition-normal), opacity var(--transition-normal);
 }
 

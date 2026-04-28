@@ -58,6 +58,7 @@ export default function BlogDetail() {
   if (!blog) return <div style={{ background: '#000', height: '100vh', display: 'grid', placeItems: 'center', color: '#fff' }}>Blog not found.</div>;
   
   const readTime = Math.max(1, Math.ceil(blog.content.length / 1000)) + ' min read';
+  const isLongTitle = blog.title.length > 48;
 
   return (
     <div style={{ background: '#000000', minHeight: '100vh', paddingBottom: '10rem' }}>
@@ -84,7 +85,7 @@ export default function BlogDetail() {
         </button>
 
         {scrolled && (
-          <span style={{ fontFamily: T.fontDisplay, fontSize: '0.9rem', color: T.text, opacity: 0.8, animation: 'fadein 0.3s ease' }}>
+          <span style={{ fontFamily: T.fontDisplay, fontSize: 'clamp(0.8rem, 2vw, 0.9rem)', color: T.text, opacity: 0.8, animation: 'fadein 0.3s ease', flex: '1 1 240px', textAlign: 'center' }}>
             {blog.title}
           </span>
         )}
@@ -103,7 +104,7 @@ export default function BlogDetail() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '0 5vw',
+        padding: '5.5rem 5vw 3rem',
         textAlign: 'center',
       }}>
         <p style={{ fontFamily: T.fontMono, fontSize: '0.72rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: T.red, marginBottom: '1.5rem' }}>
@@ -111,11 +112,12 @@ export default function BlogDetail() {
         </p>
         <h1 style={{
           fontFamily: T.fontDisplay,
-          fontSize: 'clamp(3rem, 7vw, 6rem)',
-          lineHeight: 1,
+          fontSize: isLongTitle ? 'clamp(2.4rem, 6vw, 4.75rem)' : 'clamp(3rem, 7vw, 6rem)',
+          lineHeight: isLongTitle ? 1.04 : 1,
           letterSpacing: '-0.04em',
-          maxWidth: '12ch',
+          maxWidth: '14ch',
           margin: '0 auto 2rem',
+          overflowWrap: 'anywhere',
         }}>
           {blog.title}
         </h1>
@@ -136,7 +138,7 @@ export default function BlogDetail() {
         {/* Excerpt Lead */}
         <p style={{
           fontFamily: T.fontDisplay,
-          fontSize: '1.4rem',
+          fontSize: 'clamp(1.1rem, 3vw, 1.4rem)',
           lineHeight: 1.6,
           color: 'rgba(255,255,255,0.9)',
           marginBottom: '4rem',

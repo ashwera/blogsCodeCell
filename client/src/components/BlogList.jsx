@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react'
+import { ArrowLeft } from 'lucide-react'
 import BlogCard from './BlogCard'
 import { apiFetch } from '../lib/api'
 import './BlogList.css'
-
-/* ── Live endpoints replace dummy data ── */
 
 const BlogList = ({ onBack, focusSearch = false }) => {
   const [query, setQuery] = useState('')
@@ -13,18 +12,20 @@ const BlogList = ({ onBack, focusSearch = false }) => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const data = await apiFetch('/blogs');
-        setBlogs(data);
+        const data = await apiFetch('/blogs')
+        setBlogs(data)
       } catch (err) {
-        console.error('Error finding blogs', err);
+        console.error('Error finding blogs', err)
       }
-    };
-    fetchBlogs();
-  }, []);
+    }
+
+    fetchBlogs()
+  }, [])
 
   const filteredBlogs = useMemo(() => {
     if (!query.trim()) return blogs
     const normalized = query.toLowerCase()
+
     return blogs.filter(
       (blog) =>
         blog.title.toLowerCase().includes(normalized) ||
@@ -41,17 +42,30 @@ const BlogList = ({ onBack, focusSearch = false }) => {
   return (
     <div className="blog-list-container container">
       <header className="blog-header">
-        <button className="back-btn" onClick={onBack}>
-          <span className="back-arrow">←</span> Home
-        </button>
-        <div>
+        <div className="blog-header-top">
+          <button className="back-btn" onClick={onBack}>
+            <ArrowLeft className="back-arrow" size={16} aria-hidden="true" />
+            Home
+          </button>
+          <span className="blog-count">
+            {filteredBlogs.length} {filteredBlogs.length === 1 ? 'entry' : 'entries'}
+          </span>
+        </div>
+
+        <div className="blog-hero-copy">
           <h1 className="blog-title">Curated Entries</h1>
-          <p className="blog-subtitle">Search or browse the latest posts in the CodeCell community.</p>
+          <p className="blog-subtitle">
+            Search or browse the latest posts in the CodeCell community.
+          </p>
         </div>
       </header>
 
       <div className="blog-search-row">
+        <label className="blog-search-label" htmlFor="blog-search">
+          Search archive
+        </label>
         <input
+          id="blog-search"
           ref={searchInputRef}
           type="search"
           placeholder="Search blogs by title or category..."
@@ -81,4 +95,4 @@ const BlogList = ({ onBack, focusSearch = false }) => {
   )
 }
 
-export default BlogList;
+export default BlogList
