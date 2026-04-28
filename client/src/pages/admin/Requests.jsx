@@ -76,15 +76,6 @@ function PillBtn({ onClick, red = false, children, icon }) {
 /* ═══════════════════════════════════════════
    PREVIEW PANEL — full-screen slide-in overlay
    ═══════════════════════════════════════════ */
-const BODY_LOREM = `The concept of emptiness has fascinated designers for centuries — from the negative space in Japanese ink painting to the radical white pages of modernist publishing.
-
-In digital interfaces, we call it "white space," but the name misleads. It is not a void. It is an active force — a rhythm that lets the eye rest, lets meaning breathe.
-
-The best interfaces I've studied share a quality: restraint. Every element present is necessary. Every margin is deliberate. The designer's job is not to fill the screen, but to resist filling it.
-
-When we design for nothingness — for the pause, the gap, the margin — we are designing for the reader's mind. We are leaving room for thought to arrive.
-
-This is the architecture of nothingness: not absence, but intentional space.`;
 
 function BlogPreview({ request, onClose, onAccept, onDecline }) {
   // Prevent body scroll while preview is open
@@ -221,9 +212,9 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
               {/* Divider */}
               <div style={{ width: '40px', height: '1px', background: T.red, margin: '0 auto 3.5rem' }} />
 
-              {/* Body text — Wattpad style focus */}
+              {/* Body text — actual submitted content */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-                {BODY_LOREM.split('\n\n').map((para, i) => (
+                {(request.content || '').split('\n\n').filter(Boolean).map((para, i) => (
                   <p key={i} style={{
                     fontFamily: T.fontBody,
                     fontSize: 'clamp(1rem, 2.5vw, 1.12rem)',
@@ -236,9 +227,9 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
                 ))}
               </div>
 
-              {/* Tags */}
+              {/* Tags — real data from submission */}
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: '4rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                {['Design', 'Editorial', 'Interfaces'].map(tag => (
+                {(request.tags && request.tags.length > 0 ? request.tags : [request.category]).map(tag => (
                   <span key={tag} style={{
                     fontFamily: T.fontMono, fontSize: '0.62rem', letterSpacing: '0.18em',
                     textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)',

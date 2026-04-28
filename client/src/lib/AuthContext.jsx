@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, getIdTokenResult } from 'firebase/auth';
+import { apiFetch } from './api';
 
 const AuthContext = createContext(null);
 
@@ -15,17 +16,25 @@ export function AuthProvider({ children }) {
         try {
           const tokenResult = await getIdTokenResult(currentUser);
           const role = tokenResult?.claims?.admin ? 'admin' : 'contributor';
+
+          // Fetch (or create) the user's MongoDB profile to get their permanent username
+          const profile = await apiFetch('/users/me');
+
           setUser({
             uid: currentUser.uid,
             email: currentUser.email,
-            role
+            name: currentUser.displayName || currentUser.email?.split('@')[0] || 'Contributor',
+            username: profile.username || null,
+            role,
           });
         } catch (err) {
-          console.error('Failed to fetch custom claims:', err);
+          console.error('Failed to load user profile:', err);
           setUser({
             uid: currentUser.uid,
             email: currentUser.email,
-            role: 'contributor'
+            name: currentUser.displayName || currentUser.email?.split('@')[0] || 'Contributor',
+            username: null,
+            role: 'contributor',
           });
         }
       } else {
@@ -55,7 +64,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     await signOut(auth);
   };
-  
+
   const resetPassword = async (email) => {
     try {
       await sendPasswordResetEmail(auth, email);
@@ -67,8 +76,13 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Called after the user successfully sets their username via the modal
+  const updateUsername = (username) => {
+    setUser(prev => prev ? { ...prev, username } : prev);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, resetPassword, loading, error, setError }}>
+    <AuthContext.Provider value={{ user, login, logout, resetPassword, updateUsername, loading, error, setError }}>
       {!loading && children}
     </AuthContext.Provider>
   );

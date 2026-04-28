@@ -23,8 +23,7 @@ export const apiFetch = async (endpoint, options = {}) => {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  // Use ngrok URL as base for API requests
-  const BASE_URL = 'https://kisha-volcanologic-motherly.ngrok-free.dev/api';
+  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,

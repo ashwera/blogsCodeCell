@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use('/api/items', require('./routes/itemRoutes'));
 app.use('/api/blogs', require('./routes/blogRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 
 // Start Server
 app.listen(PORT, () => {

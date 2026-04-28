@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
+import { apiFetch } from '../../lib/api';
 
 /* ── Design tokens (inline so no Tailwind dependency) ── */
 const T = {
@@ -91,13 +92,36 @@ function AnalyticsCell({ label, value, bordered = false }) {
   );
 }
 
-const recentActivity = [
-  { title: 'The Architecture of Nothingness', action: 'New request', time: '2h ago', status: 'pending' },
-  { title: 'Memory Leaks & Mental Models',     action: 'Awaiting review', time: '5h ago', status: 'pending' },
-  { title: 'Typography as an API',             action: 'Published', time: '1d ago', status: 'published' },
-];
-
 export default function Dashboard() {
+  const [stats, setStats] = useState({ total: '—', published: '—', pending: '—', rejected: '—' });
+  const [recentActivity, setRecentActivity] = useState([]);
+
+  useEffect(() => {
+    apiFetch('/blogs/stats')
+      .then(data => setStats(data))
+      .catch(err => console.error('Stats fetch failed:', err));
+
+    apiFetch('/blogs/all')
+      .then(data => {
+        const sorted = [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setRecentActivity(sorted.slice(0, 5).map(b => ({
+          title: b.title,
+          action: b.status === 'pending' ? 'Awaiting review' : b.status === 'published' ? 'Published' : 'Rejected',
+          time: formatRelativeTime(b.updatedAt || b.createdAt),
+          status: b.status,
+        })));
+      })
+      .catch(err => console.error('Activity fetch failed:', err));
+  }, []);
+
+  function formatRelativeTime(isoString) {
+    const diff = Date.now() - new Date(isoString).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  }
   return (
     <div style={{
       minHeight: 'calc(100vh - 5rem)',
@@ -134,9 +158,9 @@ export default function Dashboard() {
           <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>Live</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
-          <StatCell label="Total Blogs" value="42" bordered />
-          <StatCell label="Published"   value="34" bordered />
-          <StatCell label="Drafts"      value="08" red />
+          <StatCell label="Total Blogs" value={stats.total}     bordered />
+          <StatCell label="Published"   value={stats.published} bordered />
+          <StatCell label="Pending"     value={stats.pending}   red />
         </div>
       </Slab>
 
@@ -220,7 +244,7 @@ export default function Dashboard() {
           >
             <div>
               <p style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, marginBottom: '0.4rem' }}>
-                Pending · 4
+                Pending · {stats.pending}
               </p>
               <p style={{ fontFamily: T.fontDisplay, fontSize: '1.5rem', lineHeight: 1.1, margin: 0 }}>
                 Review Requests
@@ -240,9 +264,9 @@ export default function Dashboard() {
             marginTop: 'auto',
           }}>
             {[
-              { label: 'Published', value: '34' },
-              { label: 'Drafts', value: '08' },
-              { label: 'Requests', value: '04' },
+              { label: 'Published', value: stats.published },
+              { label: 'Rejected', value: stats.rejected },
+              { label: 'Pending', value: stats.pending },
             ].map(({ label, value }) => (
               <div key={label} style={{ flex: 1, padding: '1rem', background: T.bg, textAlign: 'center' }}>
                 <p style={{ fontFamily: T.fontMono, fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, marginBottom: '0.25rem' }}>{label}</p>

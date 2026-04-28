@@ -1,4 +1,5 @@
 const Blog = require('../models/Blog');
+const User = require('../models/User');
 
 // @route  POST /api/blogs
 // @access Contributor + Admin
@@ -8,6 +9,12 @@ const submitBlog = async (req, res) => {
     if (!title || !excerpt || !content || !category)
       return res.status(400).json({ message: 'Title, excerpt, content and category are required' });
 
+    // Require a permanent username before allowing any submission
+    const userDoc = await User.findOne({ uid: req.user.uid });
+    if (!userDoc || !userDoc.username) {
+      return res.status(403).json({ message: 'You must set an author username before submitting a blog' });
+    }
+
     const blog = await Blog.create({
       title,
       excerpt,
@@ -16,7 +23,7 @@ const submitBlog = async (req, res) => {
       tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
       coverImage: coverImage || '',
       author: req.user.uid,
-      authorName: req.user.name || 'Unknown',
+      authorName: userDoc.username,
       status: 'pending',
     });
 
@@ -91,4 +98,20 @@ const getBlogById = async (req, res) => {
   }
 };
 
-module.exports = { submitBlog, getMyBlogs, getAllBlogs, updateBlogStatus, getPublishedBlogs, getBlogById };
+// @route  GET /api/blogs/stats
+// @access Admin only
+const getBlogStats = async (req, res) => {
+  try {
+    const [total, published, pending, rejected] = await Promise.all([
+      Blog.countDocuments(),
+      Blog.countDocuments({ status: 'published' }),
+      Blog.countDocuments({ status: 'pending' }),
+      Blog.countDocuments({ status: 'rejected' }),
+    ]);
+    res.json({ total, published, pending, rejected });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { submitBlog, getMyBlogs, getAllBlogs, updateBlogStatus, getPublishedBlogs, getBlogById, getBlogStats };

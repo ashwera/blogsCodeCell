@@ -7,10 +7,19 @@ const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decodedToken = await admin.auth().verifyIdToken(token);
+
+      // decodedToken.name is only set for social (Google/etc) logins.
+      // For email/password accounts we must fetch the user record.
+      let displayName = decodedToken.name;
+      if (!displayName) {
+        const userRecord = await admin.auth().getUser(decodedToken.uid);
+        displayName = userRecord.displayName || decodedToken.email?.split('@')[0] || 'Contributor';
+      }
+
       req.user = {
         _id: decodedToken.uid,
         uid: decodedToken.uid,
-        name: decodedToken.name || null,
+        name: displayName,
         email: decodedToken.email || null,
         picture: decodedToken.picture || null,
         isAdmin: decodedToken.admin === true
