@@ -7,6 +7,15 @@
   --text-muted: #a3a3a3;
   --border-color: #333333;
   --hover-bg: #1a1a1a;
+  --hero-foreground: rgba(255, 255, 255, 0.95);
+  --hero-muted: rgba(255, 255, 255, 0.76);
+  --hero-border: rgba(255, 255, 255, 0.18);
+  --hero-border-hover: rgba(255, 255, 255, 0.35);
+  --hero-surface: rgba(255, 255, 255, 0.08);
+  --nav-bg: rgba(255, 255, 255, 0.04);
+  --nav-panel: rgba(255, 255, 255, 0.08);
+  --nav-hover: rgba(255, 255, 255, 0.1);
+  --nav-border: rgba(255, 255, 255, 0.08);
   color-scheme: dark;
 
   /* Typography Fallbacks */
@@ -31,6 +40,15 @@ body.light {
   --text-muted: #5e5e5e;
   --border-color: #dddddd;
   --hover-bg: #eaeaea;
+  --hero-foreground: rgba(0, 0, 0, 0.92);
+  --hero-muted: #000000;
+  --hero-border: rgba(0, 0, 0, 0.12);
+  --hero-border-hover: rgba(0, 0, 0, 0.24);
+  --hero-surface: rgba(0, 0, 0, 0.06);
+  --nav-bg: rgba(0, 0, 0, 0.06);
+  --nav-panel: rgba(0, 0, 0, 0.12);
+  --nav-hover: rgba(0, 0, 0, 0.08);
+  --nav-border: rgba(0, 0, 0, 0.12);
   color-scheme: light;
 }
 

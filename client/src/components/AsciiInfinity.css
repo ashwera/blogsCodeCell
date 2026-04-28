@@ -11,13 +11,15 @@
 .ascii-text {
   font-family: monospace;
   /* important for proper ASCII */
-  font-size: clamp(4px, 0.85vw, 13px);
+  font-size: clamp(3px, 0.6vw, 10px);
   line-height: 1.1;
   color: var(--text-color);
   white-space: pre;
   text-align: center;
   user-select: none;
   pointer-events: none;
+  transform: scale(0.95);
+  transform-origin: center;
 
   opacity: 0.6;
   /* softer, premium look */

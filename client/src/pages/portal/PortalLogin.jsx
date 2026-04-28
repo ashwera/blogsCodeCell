@@ -260,19 +260,19 @@ export default function PortalLogin() {
             </p>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.75rem', alignItems: 'flex-start' }}>
             <button
               type="button"
               onClick={() => { setIsSignUp(!isSignUp); setError(''); setShake(false); }}
               style={{
-                background: 'none', border: 'none', color: T.muted, textDecoration: 'underline',
+                background: 'none', border: 'none', color: T.muted, textDecoration: 'none',
                 fontFamily: T.fontMono, fontSize: '0.65rem', cursor: 'pointer', padding: 0,
                 letterSpacing: '0.05em'
               }}
               onMouseEnter={e => e.currentTarget.style.color = T.text}
               onMouseLeave={e => e.currentTarget.style.color = T.muted}
             >
-              {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Register'}
+              {isSignUp ? 'Already have an account?' : 'Need an account?'}
             </button>
             <button
               id="login-submit"
@@ -282,12 +282,12 @@ export default function PortalLogin() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '1.1rem 1.5rem',
+                padding: '0.8rem 1.2rem',
                 background: loading ? 'rgba(193,18,31,0.12)' : 'rgba(193,18,31,0.15)',
                 border: `1px solid ${loading ? 'rgba(193,18,31,0.3)' : 'rgba(193,18,31,0.55)'}`,
                 color: (!email || !password || (isSignUp && !name)) ? T.muted : T.text,
                 fontFamily: T.fontBody,
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 cursor: (loading || !email || !password || (isSignUp && !name)) ? 'not-allowed' : 'pointer',
