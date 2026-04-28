@@ -1,7 +1,8 @@
 const admin = require("firebase-admin");
+const crypto = require("crypto");
 const path = require("path");
 const fs = require("fs");
-// require("dotenv").config({ path: path.join(__dirname, "../.env") });
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 // Determine path to service account JSON
 const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || path.join(__dirname, "../config/serviceAccountKey.json");
@@ -27,8 +28,12 @@ const defaultEmails = [
 const emailsToInvite = process.argv.length > 2 ? process.argv.slice(2) : defaultEmails;
 
 // We need the Web API Key to trigger Firebase's built-in emailer
-// You can get this from your client/.env file (VITE_FIREBASE_API_KEY)
-const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY || "AIzaSyCAD1zPlaLx3sYxRXZyDOjSofLHwmaLH7E";
+// Set FIREBASE_API_KEY in your environment (e.g., server/.env from VITE_FIREBASE_API_KEY)
+const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
+if (!FIREBASE_API_KEY) {
+  console.error("❌ FIREBASE_API_KEY environment variable is required.");
+  process.exit(1);
+}
 
 async function sendFirebaseNoreplyEmail(email) {
   try {
@@ -57,8 +62,8 @@ async function createInvites() {
 
   for (const email of emailsToInvite) {
     try {
-      // Create user with a dummy random password
-      const randomPassword = Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10);
+      // Create user with a cryptographically random temporary password
+      const randomPassword = crypto.randomBytes(24).toString('base64url');
       
       const userRecord = await admin.auth().createUser({
         email: email,

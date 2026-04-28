@@ -15,8 +15,8 @@ const submitBlog = async (req, res) => {
       category,
       tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
       coverImage: coverImage || '',
-      author: req.user._id,
-      authorName: req.user.name,
+      author: req.user.uid,
+      authorName: req.user.name || 'Unknown',
       status: 'pending',
     });
 
@@ -30,7 +30,7 @@ const submitBlog = async (req, res) => {
 // @access Contributor (own submissions only)
 const getMyBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({ author: req.user._id }).sort({ createdAt: -1 });
+    const blogs = await Blog.find({ author: req.user.uid }).sort({ createdAt: -1 });
     res.json(blogs);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -41,7 +41,7 @@ const getMyBlogs = async (req, res) => {
 // @access Admin only
 const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', 'name email');
+    const blogs = await Blog.find().sort({ createdAt: -1 });
     res.json(blogs);
   } catch (err) {
     res.status(500).json({ message: err.message });

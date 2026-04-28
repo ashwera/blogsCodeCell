@@ -1,12 +1,4 @@
-const admin = require('firebase-admin');
-
-// Ensure Firebase is initialized (if not already initialized in server.js)
-if (!admin.apps.length) {
-  const serviceAccount = require('../config/serviceAccountKey.json');
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-}
+const admin = require('../config/firebaseAdmin');
 
 // Protect route — requires valid Firebase ID Token
 const protect = async (req, res, next) => {
@@ -15,7 +7,14 @@ const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decodedToken = await admin.auth().verifyIdToken(token);
-      req.user = decodedToken; // Firebase user object
+      req.user = {
+        _id: decodedToken.uid,
+        uid: decodedToken.uid,
+        name: decodedToken.name || null,
+        email: decodedToken.email || null,
+        picture: decodedToken.picture || null,
+        isAdmin: decodedToken.admin === true
+      };
       next();
     } catch (err) {
       console.error('Firebase Auth Error:', err);
@@ -26,11 +25,9 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Admin-only guard
+// Admin-only guard — requires admin custom claim set on the Firebase user
 const adminOnly = (req, res, next) => {
-  // Since all invited members are team members, we just check if they are logged in.
-  // Real role-based access can be implemented using Custom Claims in Firebase if needed.
-  if (req.user) {
+  if (req.user && req.user.isAdmin === true) {
     next();
   } else {
     res.status(403).json({ message: 'Access denied — admin only' });
