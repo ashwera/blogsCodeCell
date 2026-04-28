@@ -1,17 +1,23 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const admin = require('../config/firebaseAdmin');
 
-// Protect route — requires valid JWT
+// Protect route — requires valid Firebase ID Token
 const protect = async (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     try {
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'codecell_secret_key_fallback_123');
-      req.user = await User.findById(decoded.id).select('-password');
-      if (!req.user) return res.status(401).json({ message: 'User not found' });
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      req.user = {
+        _id: decodedToken.uid,
+        uid: decodedToken.uid,
+        name: decodedToken.name || null,
+        email: decodedToken.email || null,
+        picture: decodedToken.picture || null,
+        isAdmin: decodedToken.admin === true
+      };
       next();
     } catch (err) {
+      console.error('Firebase Auth Error:', err);
       return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   } else {
@@ -19,9 +25,9 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Admin-only guard
+// Admin-only guard — requires admin custom claim set on the Firebase user
 const adminOnly = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
+  if (req.user && req.user.isAdmin === true) {
     next();
   } else {
     res.status(403).json({ message: 'Access denied — admin only' });
@@ -30,7 +36,7 @@ const adminOnly = (req, res, next) => {
 
 // Contributor-or-admin guard
 const contributorOrAdmin = (req, res, next) => {
-  if (req.user && (req.user.role === 'contributor' || req.user.role === 'admin')) {
+  if (req.user) {
     next();
   } else {
     res.status(403).json({ message: 'Access denied — contributors only' });

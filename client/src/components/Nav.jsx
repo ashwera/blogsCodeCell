@@ -25,15 +25,17 @@ const Nav = () => {
             .login
           </NavLink>
         )}
-        {user?.role === 'contributor' && (
-          <NavLink to="/portal" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            .create
-          </NavLink>
-        )}
-        {user?.role === 'admin' && (
-          <NavLink to="/admin" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            .admin dashboard
-          </NavLink>
+        {user && (
+          <>
+            <NavLink to="/portal" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+              .create
+            </NavLink>
+            {user.role === 'admin' && (
+              <NavLink to="/admin" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+                .admin dashboard
+              </NavLink>
+            )}
+          </>
         )}
       </nav>
     </header>

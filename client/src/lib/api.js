@@ -1,16 +1,19 @@
-export const getAuthToken = () => {
+import { auth } from '../firebase';
+
+export const getAuthToken = async () => {
   try {
-    const saved = localStorage.getItem('cc_user');
-    if (saved) {
-      const user = JSON.parse(saved);
-      return user.token;
+    const user = auth.currentUser;
+    if (user) {
+      return await user.getIdToken();
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error("Error getting Firebase token", e);
+  }
   return null;
 };
 
 export const apiFetch = async (endpoint, options = {}) => {
-  const token = getAuthToken();
+  const token = await getAuthToken();
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,

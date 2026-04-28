@@ -9,8 +9,7 @@ export default function AdminLayout() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    if (!user) { navigate('/login', { replace: true }); return; }
-    if (user.role !== 'admin') { navigate('/portal', { replace: true }); return; }
+    if (!user || user.role !== 'admin') { navigate('/login', { replace: true }); return; }
   }, [user, navigate]);
 
   useEffect(() => {
@@ -18,6 +17,8 @@ export default function AdminLayout() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  
+  if (!user || user.role !== 'admin') return null;
 
   return (
     <div style={{ background: 'var(--bg-color)', color: 'var(--text-color)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-primary)' }}>
@@ -64,6 +65,7 @@ export default function AdminLayout() {
           {[
             { to: '/admin', label: '.overview', end: true },
             { to: '/admin/requests', label: '.requests', end: false },
+            { to: '/portal', label: '.portal', end: false },
             { to: '/', label: '.back to site', end: false },
           ].map(({ to, label, end }) => (
             <NavLink

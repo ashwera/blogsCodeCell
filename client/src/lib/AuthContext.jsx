@@ -1,84 +1,75 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, getIdTokenResult } from 'firebase/auth';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('cc_user');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const BASE_URL = 'https://kisha-volcanologic-motherly.ngrok-free.dev/api';
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          const tokenResult = await getIdTokenResult(currentUser);
+          const role = tokenResult?.claims?.admin ? 'admin' : 'contributor';
+          setUser({
+            uid: currentUser.uid,
+            email: currentUser.email,
+            role
+          });
+        } catch (err) {
+          console.error('Failed to fetch custom claims:', err);
+          setUser({
+            uid: currentUser.uid,
+            email: currentUser.email,
+            role: 'contributor'
+          });
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
+
   const login = async (email, password) => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      
-      if (!res.ok) {
-        setError(data.message || 'Invalid email or password.');
-        setLoading(false);
-        return null;
-      }
-      
-      localStorage.setItem('cc_user', JSON.stringify(data));
-      setUser(data);
+      await signInWithEmailAndPassword(auth, email, password);
+      // user state is updated via onAuthStateChanged
       setLoading(false);
-      return data;
+      return true;
     } catch (err) {
-      setError('Something went wrong. Try again.');
+      console.error(err);
+      setError('Invalid email or password.');
       setLoading(false);
       return null;
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('cc_user');
-    setUser(null);
+  const logout = async () => {
+    await signOut(auth);
   };
-
-  const register = async (name, email, password) => {
-    setLoading(true);
-    setError('');
+  
+  const resetPassword = async (email) => {
     try {
-      const res = await fetch(`${BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role: 'contributor' })
-      });
-      const data = await res.json();
-      
-      if (!res.ok) {
-        setError(data.message || 'Error creating account.');
-        setLoading(false);
-        return null;
-      }
-      
-      localStorage.setItem('cc_user', JSON.stringify(data));
-      setUser(data);
-      setLoading(false);
-      return data;
+      await sendPasswordResetEmail(auth, email);
+      return true;
     } catch (err) {
-      setError('Something went wrong. Try again.');
-      setLoading(false);
-      return null;
+      console.error(err);
+      setError('Failed to send reset email.');
+      return false;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading, error, setError }}>
-      {children}
+    <AuthContext.Provider value={{ user, login, logout, resetPassword, loading, error, setError }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
