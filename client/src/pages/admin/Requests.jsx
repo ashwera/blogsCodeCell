@@ -32,7 +32,7 @@ function Slab({ children, style = {}, noPad = false }) {
 /* ── Slab header label bar ── */
 function SlabLabel({ children, extra }) {
   return (
-    <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
       <p style={{ fontFamily: T.fontMono, fontSize: '0.7rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: T.muted, margin: 0 }}>
         {children}
       </p>
@@ -128,7 +128,7 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
         display: 'flex', flexDirection: 'column',
         alignItems: 'center',
         overflowY: 'auto',
-        padding: '0 5vw 8rem',
+        padding: '0 3vw 8rem',
         animation: 'fadein 0.4s ease',
       }}>
 
@@ -146,8 +146,8 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
           {/* ── Top bar (pinned to top) ── */}
           <div style={{
             position: 'sticky', top: 0, zIndex: 10,
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '1.25rem 2rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
+            padding: '1.25rem clamp(1rem, 4vw, 2rem)',
             background: 'rgba(0,0,0,0.85)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
@@ -178,9 +178,9 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
               borderBottom: `1px solid ${T.border}`,
             }} />
 
-            <article style={{ padding: '4rem 3rem' }}>
+            <article style={{ padding: 'clamp(2rem, 6vw, 4rem) clamp(1rem, 5vw, 3rem)' }}>
               {/* Meta */}
-              <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', marginBottom: '1.5rem', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                 <span style={{ fontFamily: T.fontMono, fontSize: '0.68rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: T.red }}>
                   {request.category}
                 </span>
@@ -206,7 +206,7 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
               {/* Excerpt lead */}
               <p style={{
                 fontFamily: T.fontDisplay,
-                fontSize: '1.3rem',
+                fontSize: 'clamp(1rem, 3vw, 1.3rem)',
                 lineHeight: 1.6,
                 color: 'rgba(255,255,255,0.85)',
                 marginBottom: '3.5rem',
@@ -226,7 +226,7 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
                 {BODY_LOREM.split('\n\n').map((para, i) => (
                   <p key={i} style={{
                     fontFamily: T.fontBody,
-                    fontSize: '1.12rem',
+                    fontSize: 'clamp(1rem, 2.5vw, 1.12rem)',
                     lineHeight: 1.95,
                     color: 'rgba(255,255,255,0.7)',
                     letterSpacing: '0.01em',
@@ -254,15 +254,15 @@ function BlogPreview({ request, onClose, onAccept, onDecline }) {
 
           {/* ── Bottom action bar (fixed inside modal container) ── */}
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '1.25rem 2.5rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
+            padding: '1.25rem clamp(1rem, 4vw, 2.5rem)',
             background: 'rgba(10,10,10,0.98)',
             borderTop: `1px solid ${T.border}`,
           }}>
             <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>
               Review Decision
             </span>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <PillBtn onClick={onDecline} icon={<X size={12} />}>Decline</PillBtn>
               <PillBtn red onClick={onAccept} icon={<Check size={12} />}>Publish Piece</PillBtn>
             </div>
@@ -317,7 +317,7 @@ export default function Requests() {
 
   return (
     <>
-      <div style={{ minHeight: 'calc(100vh - 5rem)', padding: '4rem 5vw 6rem', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ minHeight: 'calc(100vh - 5rem)', padding: 'clamp(2rem, 5vw, 4rem) 5vw 6rem', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
         {/* ── Header ── */}
         <header style={{ marginBottom: '1rem' }}>
@@ -331,7 +331,7 @@ export default function Requests() {
 
         {/* ── Counter slab ── */}
         <Slab noPad>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
             <div style={{ padding: '1.5rem 2rem', borderRight: `1px solid ${T.border}`, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
               <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted }}>Awaiting Review</span>
               <span style={{ fontFamily: T.fontDisplay, fontSize: '2.5rem', lineHeight: 1, color: T.red }}>{pending.length}</span>
@@ -351,7 +351,7 @@ export default function Requests() {
               {pending.map((req, i) => (
                 <div key={req._id} style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr auto',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
                   alignItems: 'center',
                   gap: '2rem',
                   padding: '1.75rem 2rem',
@@ -360,7 +360,7 @@ export default function Requests() {
                 }}>
                   {/* Info */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                       <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.red }}>{req.category}</span>
                       <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: T.muted }}>{new Date(req.createdAt).toLocaleDateString()}</span>
                     </div>
@@ -413,7 +413,7 @@ export default function Requests() {
                 <div key={req._id} style={{
                   padding: '1.25rem 2rem',
                   borderBottom: i < done.length - 1 ? `1px solid ${T.border}` : 'none',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap',
                 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                     <span style={{ fontFamily: T.fontDisplay, fontSize: '1.05rem', lineHeight: 1.2, color: T.text }}>{req.title}</span>

@@ -101,7 +101,7 @@ export default function Dashboard() {
   return (
     <div style={{
       minHeight: 'calc(100vh - 5rem)',
-      padding: '4rem 5vw 6rem',
+      padding: 'clamp(2rem, 5vw, 4rem) 5vw 6rem',
       maxWidth: '1440px',
       margin: '0 auto',
       display: 'flex',
@@ -129,11 +129,11 @@ export default function Dashboard() {
       {/* ══ ROW 1 — CONTENT STATS ══ */}
       <Slab noPad>
         {/* Slab top label bar */}
-        <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           <SlabLabel>Content Stats</SlabLabel>
           <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>Live</span>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
           <StatCell label="Total Blogs" value="42" bordered />
           <StatCell label="Published"   value="34" bordered />
           <StatCell label="Drafts"      value="08" red />
@@ -145,7 +145,7 @@ export default function Dashboard() {
         <div style={{ padding: '1.25rem 2rem', borderBottom: `1px solid ${T.border}` }}>
           <SlabLabel>Site Analytics</SlabLabel>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
           <AnalyticsCell label="Total Views"  value="12.4k" bordered />
           <AnalyticsCell label="This Month"   value="3.1k"  bordered />
           <AnalyticsCell label="Avg Read Time" value="4.2m" bordered />
@@ -154,7 +154,7 @@ export default function Dashboard() {
       </Slab>
 
       {/* ══ ROW 3 — ACTIVITY + ACTIONS ══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
 
         {/* Recent Activity slab */}
         <Slab noPad style={{ display: 'flex', flexDirection: 'column' }}>
@@ -170,6 +170,7 @@ export default function Dashboard() {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 gap: '1rem',
+                flexWrap: 'wrap',
               }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   <span style={{ fontFamily: T.fontDisplay, fontSize: '1rem', lineHeight: 1.25, color: T.text }}>
@@ -232,7 +233,8 @@ export default function Dashboard() {
 
           {/* Mini summary bar */}
           <div style={{
-            display: 'flex',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
             gap: '1px',
             background: T.border,
             marginTop: 'auto',

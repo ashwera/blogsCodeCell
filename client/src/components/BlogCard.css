@@ -49,6 +49,8 @@
 .card-meta {
   display: flex;
   justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   font-family: var(--font-accent);
   font-size: 0.75rem;
   color: white;
@@ -66,4 +68,18 @@
 
 .blog-card:hover .card-title {
   opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .blog-card {
+    gap: 1rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .card-meta {
+    font-size: 0.68rem;
+  }
 }

@@ -138,10 +138,11 @@ export default function PortalLogin() {
         to="/"
         style={{
           position: 'fixed',
-          top: '2rem',
-          left: '2rem',
+          top: 'clamp(1rem, 4vw, 2rem)',
+          left: 'clamp(1rem, 4vw, 2rem)',
           display: 'inline-flex',
           alignItems: 'center',
+          maxWidth: 'calc(100vw - 2rem)',
           padding: '0.6rem 1.2rem',
           background: 'rgba(255,255,255,0.04)',
           border: `1px solid ${T.border}`,
@@ -198,7 +199,7 @@ export default function PortalLogin() {
           background: 'rgba(255,255,255,0.025)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          padding: '3rem',
+          padding: 'clamp(1.5rem, 5vw, 3rem)',
           animation: shake ? 'shake 0.45s ease' : 'fadein 0.5s ease',
         }}
       >
@@ -282,7 +283,7 @@ export default function PortalLogin() {
               type="button"
               onClick={handleForgotPassword}
               style={{
-                background: 'none', border: 'none', color: T.muted, textDecoration: 'underline',
+                background: 'none', border: 'none', color: T.muted, textDecoration: 'none',
                 fontFamily: T.fontMono, fontSize: '0.65rem', cursor: 'pointer', padding: 0,
                 letterSpacing: '0.05em'
               }}
@@ -299,12 +300,14 @@ export default function PortalLogin() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '1.1rem 1.5rem',
+                gap: '1rem',
+                width: '100%',
+                padding: '0.8rem 1.2rem',
                 background: loading ? 'rgba(193,18,31,0.12)' : 'rgba(193,18,31,0.15)',
                 border: `1px solid ${loading ? 'rgba(193,18,31,0.3)' : 'rgba(193,18,31,0.55)'}`,
                 color: (!email || !password) ? T.muted : T.text,
                 fontFamily: T.fontBody,
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 cursor: (loading || !email || !password) ? 'not-allowed' : 'pointer',
@@ -323,13 +326,13 @@ export default function PortalLogin() {
             >
               <span>{loading ? 'Processing…' : 'Sign in'}</span>
               {!loading && (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '2rem'}}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: 'auto', flexShrink: 0}}>
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               )}
               {loading && (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                  style={{ animation: 'spin 0.8s linear infinite', marginLeft: '2rem' }}>
+                  style={{ animation: 'spin 0.8s linear infinite', marginLeft: 'auto', flexShrink: 0 }}>
                   <circle cx="12" cy="12" r="10" strokeOpacity="0.25"/>
                   <path d="M12 2a10 10 0 0 1 10 10" />
                 </svg>
@@ -349,6 +352,13 @@ export default function PortalLogin() {
           80%       { transform: translateX(5px) }
         }
         @keyframes spin { to { transform: rotate(360deg) } }
+        @media (max-width: 640px) {
+          #login-submit {
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            padding: 0.85rem 1rem;
+          }
+        }
       `}</style>
     </div>
   );

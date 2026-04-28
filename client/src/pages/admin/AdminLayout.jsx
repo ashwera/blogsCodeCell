@@ -27,7 +27,9 @@ export default function AdminLayout() {
       <header style={{
         position: 'fixed', top: 0, left: 0, right: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '1.5rem 5vw',
+        padding: '1rem 5vw',
+        gap: '1rem',
+        flexWrap: 'wrap',
         zIndex: 30,
         /* Scroll-reactive frosted glass */
         background: scrolled ? 'rgba(0,0,0,0.78)' : 'transparent',
@@ -57,6 +59,8 @@ export default function AdminLayout() {
           padding: '0.45rem 0.55rem',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
+          maxWidth: '100%',
+          overflowX: 'auto',
         }}>
           {[
             { to: '/admin', label: '.overview', end: true },
