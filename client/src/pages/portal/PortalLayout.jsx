@@ -21,8 +21,6 @@ export default function PortalLayout() {
 
   useEffect(() => {
     if (!user) { navigate('/login', { replace: true }); return; }
-    // Admins have their own dashboard
-    if (user.role === 'admin') { navigate('/admin', { replace: true }); return; }
   }, [user, navigate]);
 
   useEffect(() => {
@@ -31,9 +29,10 @@ export default function PortalLayout() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  if (!user || user.role !== 'contributor') return null;
+  if (!user) return null;
 
-  const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const emailName = user.email ? user.email.split('@')[0] : 'U';
+  const initials = emailName.slice(0, 2).toUpperCase();
 
   return (
     <div style={{ background: T.bg, color: T.text, minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: T.fontBody }}>
@@ -69,6 +68,7 @@ export default function PortalLayout() {
           {[
             { to: '/portal', label: '.submit', end: true },
             { to: '/portal/submissions', label: '.my work', end: false },
+            { to: '/admin', label: '.admin dashboard', end: false },
             { to: '/', label: '.back to site', end: false },
           ].map(({ to, label, end }) => (
             <NavLink

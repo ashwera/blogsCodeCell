@@ -1,17 +1,24 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const admin = require('firebase-admin');
 
-// Protect route — requires valid JWT
+// Ensure Firebase is initialized (if not already initialized in server.js)
+if (!admin.apps.length) {
+  const serviceAccount = require('../config/serviceAccountKey.json');
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+}
+
+// Protect route — requires valid Firebase ID Token
 const protect = async (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     try {
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'codecell_secret_key_fallback_123');
-      req.user = await User.findById(decoded.id).select('-password');
-      if (!req.user) return res.status(401).json({ message: 'User not found' });
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      req.user = decodedToken; // Firebase user object
       next();
     } catch (err) {
+      console.error('Firebase Auth Error:', err);
       return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   } else {
@@ -21,7 +28,9 @@ const protect = async (req, res, next) => {
 
 // Admin-only guard
 const adminOnly = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
+  // Since all invited members are team members, we just check if they are logged in.
+  // Real role-based access can be implemented using Custom Claims in Firebase if needed.
+  if (req.user) {
     next();
   } else {
     res.status(403).json({ message: 'Access denied — admin only' });
@@ -30,7 +39,7 @@ const adminOnly = (req, res, next) => {
 
 // Contributor-or-admin guard
 const contributorOrAdmin = (req, res, next) => {
-  if (req.user && (req.user.role === 'contributor' || req.user.role === 'admin')) {
+  if (req.user) {
     next();
   } else {
     res.status(403).json({ message: 'Access denied — contributors only' });

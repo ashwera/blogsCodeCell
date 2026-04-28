@@ -71,14 +71,13 @@ function Field({ id, label, type, value, onChange, placeholder, autoFocus }) {
 }
 
 export default function PortalLogin() {
-  const { login, register, loading, error, setError, user } = useAuth();
+  const { login, resetPassword, loading, error, setError, user } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail]       = useState('admin@codecell.dev');
-  const [password, setPassword] = useState('codecell123');
-  const [name, setName]         = useState('');
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
   const [shake, setShake]       = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [message, setMessage]   = useState('');
 
   // If already logged in, redirect
   useEffect(() => {
@@ -87,23 +86,37 @@ export default function PortalLogin() {
     }
   }, [user, navigate]);
 
-  // Clear error when user types
-  useEffect(() => { if (error) setError(''); }, [email, password]);
+  // Clear error/message when user types
+  useEffect(() => { 
+    if (error) setError(''); 
+    if (message) setMessage('');
+  }, [email, password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let result;
-    if (isSignUp) {
-      result = await register(name, email, password);
-    } else {
-      result = await login(email, password);
-    }
+    const result = await login(email, password);
     
     if (!result) {
       setShake(true);
       setTimeout(() => setShake(false), 500);
     } else {
       navigate('/', { replace: true });
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address to reset password.");
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+      return;
+    }
+    const success = await resetPassword(email);
+    if (success) {
+      setMessage("Password reset email sent. Check your inbox.");
+    } else {
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
     }
   };
 
@@ -209,24 +222,13 @@ export default function PortalLogin() {
             color: T.text,
             margin: 0,
           }}>
-            {isSignUp ? 'Create an' : 'Contributor'} <br /> 
-            {isSignUp ? 'Account' : 'Access'}
+            Restricted <br /> 
+            Access
           </h1>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          {isSignUp && (
-            <Field
-              id="register-name"
-              label="Full Name"
-              type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Ayesha R."
-              autoFocus
-            />
-          )}
           <Field
             id="login-email"
             label="Email address"
@@ -234,7 +236,7 @@ export default function PortalLogin() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             placeholder="you@example.com"
-            autoFocus={!isSignUp}
+            autoFocus
           />
           <Field
             id="login-password"
@@ -260,10 +262,25 @@ export default function PortalLogin() {
             </p>
           )}
 
+          {/* Success message */}
+          {message && (
+            <p style={{
+              fontFamily: T.fontMono,
+              fontSize: '0.68rem',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: '#38b000',
+              margin: 0,
+              animation: 'fadein 0.2s ease',
+            }}>
+              {message}
+            </p>
+          )}
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
             <button
               type="button"
-              onClick={() => { setIsSignUp(!isSignUp); setError(''); setShake(false); }}
+              onClick={handleForgotPassword}
               style={{
                 background: 'none', border: 'none', color: T.muted, textDecoration: 'underline',
                 fontFamily: T.fontMono, fontSize: '0.65rem', cursor: 'pointer', padding: 0,
@@ -272,12 +289,12 @@ export default function PortalLogin() {
               onMouseEnter={e => e.currentTarget.style.color = T.text}
               onMouseLeave={e => e.currentTarget.style.color = T.muted}
             >
-              {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Register'}
+              Forgot Password?
             </button>
             <button
               id="login-submit"
               type="submit"
-              disabled={loading || !email || !password || (isSignUp && !name)}
+              disabled={loading || !email || !password}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -285,16 +302,16 @@ export default function PortalLogin() {
                 padding: '1.1rem 1.5rem',
                 background: loading ? 'rgba(193,18,31,0.12)' : 'rgba(193,18,31,0.15)',
                 border: `1px solid ${loading ? 'rgba(193,18,31,0.3)' : 'rgba(193,18,31,0.55)'}`,
-                color: (!email || !password || (isSignUp && !name)) ? T.muted : T.text,
+                color: (!email || !password) ? T.muted : T.text,
                 fontFamily: T.fontBody,
                 fontSize: '0.85rem',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
-                cursor: (loading || !email || !password || (isSignUp && !name)) ? 'not-allowed' : 'pointer',
+                cursor: (loading || !email || !password) ? 'not-allowed' : 'pointer',
                 transition: 'border-color 0.25s, background 0.25s, color 0.25s',
               }}
               onMouseEnter={e => {
-                if (!loading && email && password && (!isSignUp || name)) {
+                if (!loading && email && password) {
                   e.currentTarget.style.background = 'rgba(193,18,31,0.25)';
                   e.currentTarget.style.borderColor = T.red;
                 }
@@ -304,7 +321,7 @@ export default function PortalLogin() {
                 e.currentTarget.style.borderColor = 'rgba(193,18,31,0.55)';
               }}
             >
-              <span>{loading ? 'Processing…' : (isSignUp ? 'Register' : 'Sign in')}</span>
+              <span>{loading ? 'Processing…' : 'Sign in'}</span>
               {!loading && (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '2rem'}}>
                   <path d="M5 12h14M12 5l7 7-7 7" />

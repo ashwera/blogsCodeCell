@@ -1,83 +1,65 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from 'firebase/auth';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('cc_user');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        // Map firebase user and inject a default role so the Nav works
+        setUser({
+          uid: currentUser.uid,
+          email: currentUser.email,
+          role: 'admin' // Granting admin role to all authenticated users for now
+        });
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
 
   const login = async (email, password) => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      
-      if (!res.ok) {
-        setError(data.message || 'Invalid email or password.');
-        setLoading(false);
-        return null;
-      }
-      
-      localStorage.setItem('cc_user', JSON.stringify(data));
-      setUser(data);
+      await signInWithEmailAndPassword(auth, email, password);
+      // user state is updated via onAuthStateChanged
       setLoading(false);
-      return data;
+      return true;
     } catch (err) {
-      setError('Something went wrong. Try again.');
+      console.error(err);
+      setError('Invalid email or password.');
       setLoading(false);
       return null;
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('cc_user');
-    setUser(null);
+  const logout = async () => {
+    await signOut(auth);
   };
-
-  const register = async (name, email, password) => {
-    setLoading(true);
-    setError('');
+  
+  const resetPassword = async (email) => {
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role: 'contributor' })
-      });
-      const data = await res.json();
-      
-      if (!res.ok) {
-        setError(data.message || 'Error creating account.');
-        setLoading(false);
-        return null;
-      }
-      
-      localStorage.setItem('cc_user', JSON.stringify(data));
-      setUser(data);
-      setLoading(false);
-      return data;
+      await sendPasswordResetEmail(auth, email);
+      return true;
     } catch (err) {
-      setError('Something went wrong. Try again.');
-      setLoading(false);
-      return null;
+      console.error(err);
+      setError('Failed to send reset email.');
+      return false;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading, error, setError }}>
-      {children}
+    <AuthContext.Provider value={{ user, login, logout, resetPassword, loading, error, setError }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
