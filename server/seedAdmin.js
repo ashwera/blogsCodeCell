@@ -1,5 +1,6 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
+const admin = require("./config/firebaseAdmin");
 const User = require("./models/User");
 
 const seedAdmin = async () => {
@@ -17,36 +18,68 @@ const seedAdmin = async () => {
     const contributorEmail = "contributor@codecell.dev";
     const contributorPassword = "Contributor@123456";
 
+    // Create Admin in Firebase
+    let adminUser;
+    try {
+      adminUser = await admin.auth().getUserByEmail(adminEmail);
+      console.log("Admin already exists in Firebase!");
+    } catch (err) {
+      if (err.code === "auth/user-not-found") {
+        adminUser = await admin.auth().createUser({
+          email: adminEmail,
+          password: adminPassword,
+          displayName: "Admin User",
+        });
+        await admin.auth().setCustomUserClaims(adminUser.uid, { admin: true });
+        console.log(
+          `Admin created in Firebase! Email: ${adminEmail}, Password: ${adminPassword}`,
+        );
+      } else {
+        throw err;
+      }
+    }
+
+    // Create Admin in MongoDB
     const adminExists = await User.findOne({ email: adminEmail });
-    if (adminExists) {
-      console.log("Admin already exists!");
-    } else {
+    if (!adminExists) {
       await User.create({
-        name: "Admin User",
+        uid: adminUser.uid,
         email: adminEmail,
-        password: adminPassword,
-        role: "admin",
       });
-      console.log(
-        `Admin created successfully! Email: ${adminEmail}, Password: ${adminPassword}`,
-      );
+      console.log("Admin created in MongoDB!");
     }
 
+    // Create Contributor in Firebase
+    let contributorUser;
+    try {
+      contributorUser = await admin.auth().getUserByEmail(contributorEmail);
+      console.log("Contributor already exists in Firebase!");
+    } catch (err) {
+      if (err.code === "auth/user-not-found") {
+        contributorUser = await admin.auth().createUser({
+          email: contributorEmail,
+          password: contributorPassword,
+          displayName: "Contributor User",
+        });
+        console.log(
+          `Contributor created in Firebase! Email: ${contributorEmail}, Password: ${contributorPassword}`,
+        );
+      } else {
+        throw err;
+      }
+    }
+
+    // Create Contributor in MongoDB
     const contributorExists = await User.findOne({ email: contributorEmail });
-    if (contributorExists) {
-      console.log("Contributor already exists!");
-    } else {
+    if (!contributorExists) {
       await User.create({
-        name: "Contributor User",
+        uid: contributorUser.uid,
         email: contributorEmail,
-        password: contributorPassword,
-        role: "contributor",
       });
-      console.log(
-        `Contributor created successfully! Email: ${contributorEmail}, Password: ${contributorPassword}`,
-      );
+      console.log("Contributor created in MongoDB!");
     }
 
+    console.log("\n✅ Seeding complete!");
     process.exit();
   } catch (err) {
     console.error(err);
