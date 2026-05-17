@@ -1,17 +1,20 @@
-import { connectDB } from '../../../../lib/db.js';
-import { protect, adminOnly } from '../../../../lib/authMiddleware.js';
+import { connectDB } from "../../../../lib/db.js";
+import { protect, adminOnly } from "../../../../lib/authMiddleware.js";
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  if (req.method === 'OPTIONS') {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    process.env.FRONTEND_URL || "http://localhost:5173",
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  if (req.method !== 'PATCH') {
-    return res.status(405).json({ message: 'Method not allowed' });
+  if (req.method !== "PATCH") {
+    return res.status(405).json({ message: "Method not allowed" });
   }
 
   try {
@@ -27,27 +30,27 @@ export default async function handler(req, res) {
   }
 
   const { status, adminNote } = req.body;
-  
-  if (!['pending', 'published', 'rejected'].includes(status)) {
-    return res.status(400).json({ message: 'Invalid status' });
+
+  if (!["pending", "published", "rejected"].includes(status)) {
+    return res.status(400).json({ message: "Invalid status" });
   }
 
   try {
     await connectDB();
-    const Blog = (await import('../../../../server/models/Blog.js')).default;
+    const Blog = (await import("../../../../server/models/Blog.js")).default;
     const blog = await Blog.findByIdAndUpdate(
       req.query.id,
-      { status, adminNote: adminNote || '' },
-      { new: true }
+      { status, adminNote: adminNote || "" },
+      { new: true },
     );
 
     if (!blog) {
-      return res.status(404).json({ message: 'Blog not found' });
+      return res.status(404).json({ message: "Blog not found" });
     }
 
     res.status(200).json(blog);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
