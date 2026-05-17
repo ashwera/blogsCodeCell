@@ -47,8 +47,8 @@ export default function BlogDetail() {
         const data = await apiFetch(`/blogs/${id}`);
         setBlog(data);
         
-        const viewUrl = import.meta.env.PROD ? '/api/events' : 'http://localhost:8080/events';
-        fetch(viewUrl, {
+        // Log VIEW event
+        fetch('http://localhost:8080/events', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ blog_id: id, type: 'view' })
@@ -65,8 +65,7 @@ export default function BlogDetail() {
     return () => {
       const timeSpent = Math.floor((Date.now() - startTime) / 1000);
       if (timeSpent > 5) { // Only log if they stayed > 5s
-        const readUrl = import.meta.env.PROD ? '/api/events' : 'http://localhost:8080/events';
-        fetch(readUrl, {
+        fetch('http://localhost:8080/events', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ blog_id: id, type: 'read', time_spent: timeSpent })

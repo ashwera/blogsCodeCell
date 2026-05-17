@@ -23,7 +23,7 @@ export const apiFetch = async (endpoint, options = {}) => {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5001/api');
+  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,
