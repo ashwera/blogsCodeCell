@@ -1,0 +1,14 @@
+{
+  "name": "blog-platform",
+  "version": "1.0.0",
+  "description": "University Blog Platform - Serverless",
+  "scripts": {
+    "build": "echo ok"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^13.8.0",
+    "mongoose": "^8.3.2",
+    "zod": "^4.3.6"
+  }
+}
