@@ -104,7 +104,8 @@ export default function Dashboard() {
       .catch(err => console.error('Stats fetch failed:', err));
 
     // NEW SITE ANALYTICS
-    fetch('http://localhost:8080/stats')
+    const analyticsUrl = import.meta.env.PROD ? '/api/stats' : 'http://localhost:8080/stats';
+    fetch(analyticsUrl)
       .then(res => res.json())
       .then(data => setAnalytics(data))
       .catch(err => console.error('Analytics fetch failed:', err));
