@@ -1,31 +1,52 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const User = require('./models/User');
+require("dotenv").config();
+const mongoose = require("mongoose");
+const User = require("./models/User");
 
 const seedAdmin = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/codecellblogs');
-    console.log('DB Connected');
+    await mongoose.connect(
+      process.env.MONGO_URI || "mongodb://localhost:27017/codecellblogs",
+    );
+    console.log("DB Connected");
 
-    const adminExists = await User.findOne({ email: 'admin@codecell.dev' });
+    // Hardcoded credentials for admin
+    const adminEmail = "admin@codecell.dev";
+    const adminPassword = "Admin@123456";
+
+    // Hardcoded credentials for contributor
+    const contributorEmail = "contributor@codecell.dev";
+    const contributorPassword = "Contributor@123456";
+
+    const adminExists = await User.findOne({ email: adminEmail });
     if (adminExists) {
-      console.log('Admin already exists!');
-      process.exit();
+      console.log("Admin already exists!");
+    } else {
+      await User.create({
+        name: "Admin User",
+        email: adminEmail,
+        password: adminPassword,
+        role: "admin",
+      });
+      console.log(
+        `Admin created successfully! Email: ${adminEmail}, Password: ${adminPassword}`,
+      );
     }
 
-    const adminPassword = process.env.ADMIN_PASSWORD || 'codecell123';
-    if (adminPassword === 'codecell123') {
-      console.warn('WARNING: Using default password for admin account.');
+    const contributorExists = await User.findOne({ email: contributorEmail });
+    if (contributorExists) {
+      console.log("Contributor already exists!");
+    } else {
+      await User.create({
+        name: "Contributor User",
+        email: contributorEmail,
+        password: contributorPassword,
+        role: "contributor",
+      });
+      console.log(
+        `Contributor created successfully! Email: ${contributorEmail}, Password: ${contributorPassword}`,
+      );
     }
 
-    await User.create({
-      name: 'Admin User',
-      email: 'admin@codecell.dev',
-      password: adminPassword,
-      role: 'admin'
-    });
-
-    console.log(`Admin created successfully! Email: admin@codecell.dev, Password: ${adminPassword === 'codecell123' ? 'codecell123' : '[HIDDEN]'}`);
     process.exit();
   } catch (err) {
     console.error(err);
