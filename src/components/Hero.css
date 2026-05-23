@@ -50,10 +50,20 @@
 
 .hero-word {
   display: inline-block;
-  min-width: 1.95em;
+  width: 1.95em;
   font-family: inherit;
   font-style: inherit;
   color: #C1121F;
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.hero-punctuation {
+  color: #ffffff;
+}
+
+.hero-after-word {
+  margin-left: 0.45em;
 }
 
 .hero-word::after {

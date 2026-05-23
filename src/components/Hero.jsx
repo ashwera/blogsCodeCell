@@ -42,9 +42,9 @@ const Hero = ({ onBrowse }) => {
     <section className="hero-container">
       <div className="hero-content container">
         <h1 className="hero-heading">
-          <span className="hero-heading-line">Changing The World</span>
+          <span className="hero-heading-line">Changing The World<span className="hero-punctuation">,</span></span>
           <span className="hero-heading-line">
-            One <span className="hero-word">{typedWord}</span> At A Time
+            One <span className="hero-word">{typedWord}</span><span className="hero-after-word">At A Time<span className="hero-punctuation">.</span></span>
           </span>
         </h1>
 
