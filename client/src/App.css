@@ -16,6 +16,12 @@ main {
 
 @media (max-width: 768px) {
   .app-main {
-    padding-top: 8rem;
+    padding-top: 9.5rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-main {
+    padding-top: 10.25rem;
   }
 }
