@@ -1,11 +1,15 @@
 .hero-container {
-  min-height: calc(100svh - 2rem);
+  min-height: 100svh;
   position: relative;
   display: grid;
   place-items: center;
   align-items: center;
-  padding: clamp(3.5rem, 7vw, 5.5rem) 0 clamp(4rem, 8vw, 6rem);
+  padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(2.5rem, 5vw, 4rem);
   overflow: hidden;
+}
+
+.hero-stage {
+  display: contents;
 }
 
 .hero-content {
@@ -143,6 +147,41 @@
   transform: none;
 }
 
+@media (min-width: 1600px) {
+  .hero-container {
+    padding-top: clamp(3rem, 4vw, 5rem);
+    padding-bottom: clamp(3rem, 4vw, 5rem);
+  }
+
+  .hero-content {
+    max-width: min(1040px, 100%);
+  }
+
+  .hero-heading {
+    font-size: clamp(5rem, 5vw, 7.25rem);
+  }
+
+  .hero-container .ascii-container {
+    width: min(1900px, 126vw);
+    height: min(76vh, 820px);
+  }
+
+  .hero-container .ascii-text {
+    font-size: clamp(8px, 0.58vw, 11px);
+  }
+}
+
+@media (min-width: 2200px) {
+  .hero-heading {
+    font-size: 7.75rem;
+  }
+
+  .hero-container .ascii-container {
+    width: min(2200px, 112vw);
+    height: min(78vh, 900px);
+  }
+}
+
 @media (max-width: 1024px) {
   .hero-container .ascii-container {
     width: 178vw;
@@ -156,25 +195,25 @@
 
 @media (max-width: 768px) {
   .hero-container {
-    min-height: 86vh;
-    padding: 4rem 0 4rem;
+    min-height: 100svh;
+    padding: 0;
+    place-items: center;
     align-items: center;
   }
 
-  .hero-heading {
-    font-size: clamp(2rem, 7.6vw, 3.35rem);
-    max-width: 100%;
-  }
-
-  .hero-container .ascii-container {
-    width: 205vw;
-    height: 60vh;
-    opacity: 0.58;
+  .hero-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 100svh;
+    transform-origin: center center;
+    transform: scale(0.88);
   }
 
   .hero-content {
-    gap: 1.5rem;
-    transform: translateY(0);
+    gap: 2rem;
+    transform: translateY(clamp(0rem, 1vh, 0.75rem));
   }
 
   .hero-content.container {
@@ -186,7 +225,6 @@
     width: fit-content;
     max-width: 100%;
     justify-content: center;
-    top: clamp(1rem, 3vw, 2rem);
   }
 }
 
@@ -197,18 +235,12 @@
 }
 
 @media (max-width: 480px) {
+  .hero-stage {
+    transform: scale(0.74);
+  }
+
   .hero-heading {
-    font-size: clamp(1.65rem, 7vw, 2.3rem);
     line-height: 1;
-  }
-
-  .hero-container .ascii-container {
-    width: 235vw;
-    height: 52vh;
-  }
-
-  .hero-container .ascii-text {
-    font-size: clamp(2.4px, 0.95vw, 4px);
   }
 
   .hero-cta {
@@ -225,11 +257,12 @@
 }
 
 @media (max-width: 360px) {
-  .hero-heading {
-    font-size: clamp(1.35rem, 6.4vw, 1.75rem);
+  .hero-stage {
+    transform: scale(0.66);
   }
 
-  .hero-container .ascii-container {
-    width: 255vw;
+  .hero-cta {
+    top: 1rem;
   }
+
 }

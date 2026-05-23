@@ -61,7 +61,7 @@
 }
 
 .card-title {
-  font-family: var(--font-heading);
+  font-family: 'Cormorant Garamond', var(--font-heading);
   font-size: 0.95rem;
   color: #C1121F;
   line-height: 1.2;

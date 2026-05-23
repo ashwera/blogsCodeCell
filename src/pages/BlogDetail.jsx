@@ -102,7 +102,7 @@ export default function BlogDetail() {
           {blog.category}
         </p>
         <h1 style={{
-          fontFamily: T.fontDisplay,
+          fontFamily: "'Cormorant Garamond', var(--font-heading)",
           fontSize: isLongTitle ? 'clamp(2.4rem, 6vw, 4.75rem)' : 'clamp(3rem, 7vw, 6rem)',
           lineHeight: isLongTitle ? 1.04 : 1,
           letterSpacing: '-0.04em',

@@ -5,7 +5,11 @@ import Hero from '../components/Hero'
 const Home = () => {
   const navigate = useNavigate()
 
-  return <Hero onBrowse={() => navigate('/blogs')} />
+  return (
+    <div className="home-page">
+      <Hero onBrowse={() => navigate('/blogs')} />
+    </div>
+  )
 }
 
 export default Home

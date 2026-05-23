@@ -14,14 +14,46 @@ main {
   min-height: 100vh;
 }
 
+.app-main:has(.home-page) {
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+  padding-top: 0;
+}
+
+.app-main:has(.blogs-page) {
+  padding-top: 2.5rem;
+}
+
+.home-page {
+  height: 100%;
+  overflow: hidden;
+}
+
 @media (max-width: 768px) {
   .app-main {
-    padding-top: 9.5rem;
+    padding-top: 4.5rem;
+  }
+
+  .app-main:has(.home-page) {
+    padding-top: 0;
+  }
+
+  .app-main:has(.blogs-page) {
+    padding-top: 2rem;
   }
 }
 
 @media (max-width: 420px) {
   .app-main {
-    padding-top: 10.25rem;
+    padding-top: 4rem;
+  }
+
+  .app-main:has(.home-page) {
+    padding-top: 0;
+  }
+
+  .app-main:has(.blogs-page) {
+    padding-top: 1.5rem;
   }
 }

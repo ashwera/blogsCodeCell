@@ -7,7 +7,11 @@ const Blogs = () => {
   const [searchParams] = useSearchParams()
   const focusSearch = searchParams.get('focus') === 'search'
 
-  return <BlogList onBack={() => navigate('/')} focusSearch={focusSearch} />
+  return (
+    <div className="blogs-page">
+      <BlogList onBack={() => navigate('/')} focusSearch={focusSearch} />
+    </div>
+  )
 }
 
 export default Blogs

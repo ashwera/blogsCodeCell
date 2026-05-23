@@ -40,23 +40,25 @@ const Hero = ({ onBrowse }) => {
 
   return (
     <section className="hero-container">
-      <div className="hero-content container">
-        <h1 className="hero-heading">
-          <span className="hero-heading-line">Changing The World<span className="hero-punctuation">,</span></span>
-          <span className="hero-heading-line">
-            One <span className="hero-word">{typedWord}</span><span className="hero-after-word">At A Time<span className="hero-punctuation">.</span></span>
-          </span>
-        </h1>
+      <div className="hero-stage">
+        <div className="hero-content container">
+          <h1 className="hero-heading">
+            <span className="hero-heading-line">Changing The World<span className="hero-punctuation">,</span></span>
+            <span className="hero-heading-line">
+              One <span className="hero-word">{typedWord}</span><span className="hero-after-word">At A Time<span className="hero-punctuation">.</span></span>
+            </span>
+          </h1>
 
-        <button onClick={onBrowse} className="hero-cta">
-          <span className="cta-icon">
-            <ArrowUpRight size={16} />
-          </span>
-          View Blogs
-        </button>
+          <button onClick={onBrowse} className="hero-cta">
+            <span className="cta-icon">
+              <ArrowUpRight size={16} />
+            </span>
+            View Blogs
+          </button>
+        </div>
+
+        <AsciiInfinity />
       </div>
-
-      <AsciiInfinity />
     </section>
   )
 }
