@@ -43,6 +43,7 @@
   .admin-link,
   .signout-link {
     font-size: 0.85rem;
-    padding: 0 0.55rem;
+    padding: 0.25rem 0.7rem;
+    min-height: 2.25rem;
   }
 }

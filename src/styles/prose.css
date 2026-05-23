@@ -1,0 +1,196 @@
+/* ── Markdown prose styles ── */
+.prose {
+  color: rgba(255, 255, 255, 0.68);
+  font-family: var(--font-primary);
+  font-size: clamp(1rem, 2.2vw, 1.08rem);
+  line-height: 1.95;
+  letter-spacing: 0.01em;
+}
+
+/* Drop cap on the first paragraph */
+.prose > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-heading);
+  font-size: 5em;
+  line-height: 0.78;
+  margin-right: 0.07em;
+  margin-top: 0.08em;
+  color: #C1121F;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.prose > * + * {
+  margin-top: 1.75em;
+}
+
+/* Headings */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-heading);
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-top: 2.5em;
+  margin-bottom: 0.6em;
+}
+
+.prose h1 { font-size: clamp(1.7rem, 4vw, 2.2rem); }
+.prose h2 { font-size: clamp(1.35rem, 3vw, 1.7rem); }
+.prose h3 { font-size: clamp(1.1rem, 2.5vw, 1.3rem); }
+.prose h4 { font-size: 1rem; color: rgba(255,255,255,0.7); }
+
+/* Paragraphs */
+.prose p {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.prose p + p {
+  margin-top: 1.6em;
+}
+
+/* Bold / Italic */
+.prose strong {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.prose em {
+  color: rgba(255, 255, 255, 0.78);
+  font-style: italic;
+}
+
+/* Links */
+.prose a {
+  color: #C1121F;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: opacity 0.2s;
+}
+
+.prose a:hover {
+  opacity: 0.75;
+}
+
+/* Blockquote */
+.prose blockquote {
+  border-left: 2px solid #C1121F;
+  padding: 0.25em 0 0.25em clamp(1rem, 4vw, 2rem);
+  margin: 2em 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.65;
+  letter-spacing: -0.005em;
+}
+
+.prose blockquote > p::first-letter {
+  float: none;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  color: inherit;
+}
+
+/* Lists */
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+
+.prose li::marker {
+  color: #C1121F;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin-top: 0.4em;
+}
+
+/* Horizontal rule */
+.prose hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 3em 0;
+}
+
+/* Inline code */
+.prose code {
+  font-family: var(--font-accent);
+  font-size: 0.85em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 0.15em 0.45em;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0;
+}
+
+/* Code blocks */
+.prose pre {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  margin: 2em 0;
+}
+
+.prose pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.88em;
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 0;
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+
+/* Tables */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  margin: 2em 0;
+}
+
+.prose th,
+.prose td {
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.prose th {
+  font-family: var(--font-accent);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.prose tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Images */
+.prose img {
+  max-width: 100%;
+  border-radius: 2px;
+  margin: 1em 0;
+}

@@ -64,8 +64,8 @@ export default function BlogDetail() {
         borderBottom: scrolled ? `1px solid ${T.border}` : '1px solid transparent',
         backdropFilter: scrolled ? 'blur(18px)' : 'none',
         WebkitBackdropFilter: scrolled ? 'blur(18px)' : 'none',
-        padding: '1rem 5vw',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap',
+        padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1rem, 5vw, 5vw)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'nowrap',
         transition: 'all 0.4s ease',
       }}>
         <button
@@ -93,24 +93,24 @@ export default function BlogDetail() {
 
       {/* Hero */}
       <section style={{
-        width: '100%', minHeight: '60vh',
+        width: '100%', minHeight: '55vh',
         background: 'radial-gradient(circle at 30% 40%, #1a1a1a 0%, #000 100%)',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '5.5rem 5vw 3rem', textAlign: 'center',
+        padding: 'clamp(4.5rem, 12vw, 5.5rem) clamp(1.25rem, 5vw, 5vw) clamp(2rem, 5vw, 3rem)', textAlign: 'center',
       }}>
         <p style={{ fontFamily: T.fontMono, fontSize: '0.72rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: T.red, marginBottom: '1.5rem' }}>
           {blog.category}
         </p>
         <h1 style={{
           fontFamily: "'Cormorant Garamond', var(--font-heading)",
-          fontSize: isLongTitle ? 'clamp(2.4rem, 6vw, 4.75rem)' : 'clamp(3rem, 7vw, 6rem)',
-          lineHeight: isLongTitle ? 1.04 : 1,
-          letterSpacing: '-0.04em',
+          fontSize: isLongTitle ? 'clamp(2rem, 7vw, 4.75rem)' : 'clamp(2.5rem, 8vw, 6rem)',
+          lineHeight: isLongTitle ? 1.06 : 1.02,
+          letterSpacing: '-0.03em',
           maxWidth: '14ch', margin: '0 auto 2rem', overflowWrap: 'anywhere',
         }}>
           {blog.title}
         </h1>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
           <span style={{ fontFamily: T.fontMono, fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted }}>
             By {blog.authorName}
           </span>
@@ -122,7 +122,7 @@ export default function BlogDetail() {
       </section>
 
       {/* Article body */}
-      <main style={{ maxWidth: '740px', margin: '0 auto', padding: 'clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem)' }}>
+      <main style={{ maxWidth: '740px', margin: '0 auto', padding: 'clamp(2rem, 6vw, 5rem) clamp(1.25rem, 5vw, 2rem)' }}>
         {blog.excerpt && (
           <p style={{
             fontFamily: T.fontDisplay,
@@ -165,7 +165,13 @@ export default function BlogDetail() {
         </div>
       </main>
 
-      <style>{`@keyframes fadein { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }`}</style>
+      <style>{`
+        @keyframes fadein { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }
+        @media (max-width: 640px) {
+          .blog-detail-back { font-size: 0.65rem !important; letter-spacing: 0.15em !important; }
+          .blog-detail-share { padding: 0.5rem !important; }
+        }
+      `}</style>
     </div>
   )
 }
