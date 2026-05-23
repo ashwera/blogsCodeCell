@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LogIn, LogOut, Plus, Trash2, X, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../../lib/AuthContext'
@@ -85,9 +85,9 @@ export default function AdminPage() {
     }
   }
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await logout()
-  }
+  }, [logout])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -123,8 +123,9 @@ export default function AdminPage() {
   }
 
   /* ── Shared wrapper ── */
-  const Wrapper = ({ children }) => (
-    <div style={{ background: T.bg, color: T.text, minHeight: '100vh', fontFamily: T.fontBody }}>
+  const Wrapper = useMemo(() => {
+    const StableWrapper = ({ children }) => (
+      <div style={{ background: T.bg, color: T.text, minHeight: '100vh', fontFamily: T.fontBody }}>
       <header style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap',
         padding: '1.25rem clamp(1rem, 5vw, 4rem)',
@@ -159,8 +160,11 @@ export default function AdminPage() {
       <main style={{ padding: 'clamp(2rem, 6vw, 4rem) clamp(1rem, 5vw, 4rem)', maxWidth: '900px', margin: '0 auto' }}>
         {children}
       </main>
-    </div>
-  )
+      </div>
+    )
+
+    return StableWrapper
+  }, [handleLogout, navigate, user])
 
   /* ── Loading ── */
   if (loading) return <Wrapper><p style={{ color: T.muted }}>Loading...</p></Wrapper>

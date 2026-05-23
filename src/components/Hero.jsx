@@ -1,18 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AsciiInfinity from './AsciiInfinity'
 import { ArrowUpRight } from 'lucide-react'
 import './Hero.css'
 
 const Hero = ({ onBrowse }) => {
+  const [typedWord, setTypedWord] = useState('')
+
+  useEffect(() => {
+    const frames = [
+      '',
+      'B',
+      'Bi',
+      'Bit',
+      'Bit',
+      'Bit',
+      'Bi',
+      'B',
+      '',
+      'W',
+      'Wo',
+      'Wor',
+      'Word',
+      'Word',
+      'Word',
+    ]
+    let frame = 0
+    const interval = window.setInterval(() => {
+      frame += 1
+      setTypedWord(frames[frame])
+      if (frame === frames.length - 1) {
+        window.clearInterval(interval)
+      }
+    }, 320)
+
+    setTypedWord(frames[0])
+
+    return () => window.clearInterval(interval)
+  }, [])
+
   return (
     <section className="hero-container">
       <div className="hero-content container">
         <h1 className="hero-heading">
-          changing the <span className="hero-heading">world</span>
-          <br />
-          one <span className="italic" style={{ color: '#C1121F' }}>word</span>
-          <br />
-          at a time
+          <span className="hero-heading-line">Changing The World</span>
+          <span className="hero-heading-line">
+            One <span className="hero-word">{typedWord}</span> At A Time
+          </span>
         </h1>
 
         <button onClick={onBrowse} className="hero-cta">

@@ -1,19 +1,23 @@
 .hero-container {
-  min-height: calc(100vh - 6rem);
+  min-height: calc(100svh - 2rem);
   position: relative;
-  display: flex;
+  display: grid;
+  place-items: center;
   align-items: center;
-  padding: clamp(5rem, 10vw, 8rem) 0 6rem;
+  padding: clamp(3.5rem, 7vw, 5.5rem) 0 clamp(4rem, 8vw, 6rem);
   overflow: hidden;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 760px;
+  max-width: min(900px, 100%);
   display: grid;
   gap: 2rem;
   width: 100%;
+  justify-items: center;
+  text-align: center;
+  transform: translateY(clamp(0rem, 1vh, 0.75rem));
 }
 
 .hero-eyebrow {
@@ -27,18 +31,46 @@
 
 .hero-heading {
   margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(3.5rem, 6vw, 8rem);
+  font-family: 'Cormorant Garamond', var(--font-heading);
+  font-size: clamp(2.85rem, 4.8vw, 6rem);
   line-height: 0.96;
-  letter-spacing: -0.05em;
-  max-width: 12ch;
-  color: var(--hero-foreground);
+  letter-spacing: 0;
+  max-width: 100%;
+  color: #fff;
 }
 
-.hero-heading .accent,
-.hero-heading .italic {
+.hero-heading-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero-heading .accent {
   font-family: var(--font-accent);
-  font-style: italic;
+}
+
+.hero-word {
+  display: inline-block;
+  min-width: 1.95em;
+  font-family: inherit;
+  font-style: inherit;
+  color: #C1121F;
+}
+
+.hero-word::after {
+  content: '';
+  display: inline-block;
+  width: 0.04em;
+  height: 0.82em;
+  margin-left: 0.06em;
+  background: currentColor;
+  transform: translateY(0.08em);
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 .hero-cta {
@@ -47,7 +79,9 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  justify-self: start;
+  justify-self: center;
+  margin-top: clamp(1rem, 3vw, 2.75rem);
+  top: clamp(1.5rem, 4vw, 3.5rem);
   gap: 0.6rem;
   padding: 0.55rem 1rem 0.55rem 0.7rem;
   color: var(--text-color);
@@ -76,56 +110,61 @@
   background: var(--hero-surface);
 }
 
-.hero-ascii {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  margin: 0;
-  padding: 5rem 0 0 2rem;
-  pointer-events: none;
-  user-select: none;
-  color: var(--hero-muted);
-  font-family: var(--font-accent);
-  white-space: pre-wrap;
-  font-size: 0.75rem;
-  line-height: 1.2;
-
-}
-
 .hero-content.container {
   margin: 0 auto;
-  padding-left: clamp(1rem, 7vw, 8rem);
+  padding-left: clamp(1rem, 4vw, 5vw);
   padding-right: clamp(1rem, 4vw, 5vw);
 }
 
+.hero-container .ascii-container {
+  position: absolute;
+  inset: 45% auto auto 50%;
+  z-index: 1;
+  width: min(1700px, 154vw);
+  height: min(72vh, 720px);
+  transform: translate(-50%, -50%);
+  opacity: 0.75;
+  overflow: visible;
+}
+
+.hero-container .ascii-text {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: clamp(3.5px, 0.66vw, 10px);
+  transform: none;
+}
+
 @media (max-width: 1024px) {
+  .hero-container .ascii-container {
+    width: 178vw;
+  }
+
   .hero-content.container {
     padding-left: clamp(1rem, 5vw, 3rem);
+    padding-right: clamp(1rem, 5vw, 3rem);
   }
 }
 
 @media (max-width: 768px) {
   .hero-container {
-    min-height: auto;
-    padding: 2rem 0 4rem;
-    align-items: flex-end;
+    min-height: 86vh;
+    padding: 4rem 0 4rem;
+    align-items: center;
   }
 
   .hero-heading {
-    font-size: clamp(2.75rem, 11vw, 4rem);
+    font-size: clamp(2rem, 7.6vw, 3.35rem);
     max-width: 100%;
   }
 
-  .hero-ascii {
-    padding-left: 1rem;
-    padding-top: 2rem;
-    font-size: 0.72rem;
-    opacity: 0.45;
-    filter: blur(0.3px);
+  .hero-container .ascii-container {
+    width: 205vw;
+    height: 60vh;
+    opacity: 0.58;
   }
 
   .hero-content {
     gap: 1.5rem;
+    transform: translateY(0);
   }
 
   .hero-content.container {
@@ -137,6 +176,7 @@
     width: fit-content;
     max-width: 100%;
     justify-content: center;
+    top: clamp(1rem, 3vw, 2rem);
   }
 }
 
@@ -148,22 +188,38 @@
 
 @media (max-width: 480px) {
   .hero-heading {
-    font-size: clamp(2.3rem, 12vw, 3.25rem);
+    font-size: clamp(1.65rem, 7vw, 2.3rem);
     line-height: 1;
   }
 
-  .hero-ascii {
-    font-size: 0.66rem;
+  .hero-container .ascii-container {
+    width: 235vw;
+    height: 52vh;
+  }
+
+  .hero-container .ascii-text {
+    font-size: clamp(2.4px, 0.95vw, 4px);
   }
 
   .hero-cta {
     gap: 0.5rem;
     padding: 0.5rem 0.85rem 0.5rem 0.6rem;
     font-size: 0.72rem;
+    top: 1.25rem;
   }
 
   .cta-icon {
     width: 1.75rem;
     height: 1.75rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-heading {
+    font-size: clamp(1.35rem, 6.4vw, 1.75rem);
+  }
+
+  .hero-container .ascii-container {
+    width: 255vw;
   }
 }

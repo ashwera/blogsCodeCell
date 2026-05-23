@@ -9,6 +9,7 @@
 }
 
 .ascii-text {
+  margin: 0;
   font-family: monospace;
   /* important for proper ASCII */
   font-size: clamp(3px, 0.6vw, 10px);
@@ -24,4 +25,8 @@
   opacity: 0.6;
   /* softer, premium look */
   letter-spacing: normal;
+}
+
+.ascii-dot {
+  color: #000;
 }
