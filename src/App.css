@@ -1,0 +1,21 @@
+.app-main {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 6rem;
+}
+
+main {
+  position: relative;
+}
+
+.view-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .app-main {
+    padding-top: 8rem;
+  }
+}
