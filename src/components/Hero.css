@@ -155,6 +155,7 @@
 
   .hero-content {
     max-width: min(1040px, 100%);
+    transform: translateY(clamp(0rem, 1vh, 0.75rem));
   }
 
   .hero-heading {
