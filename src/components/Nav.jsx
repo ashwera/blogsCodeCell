@@ -18,6 +18,9 @@ const Nav = () => {
 
   return (
     <header className="top-nav">
+      <button className="nav-link" onClick={() => navigate('/write')}>
+        .write
+      </button>
       <button className="admin-link" onClick={() => navigate('/admin')}>
         .admin
       </button>

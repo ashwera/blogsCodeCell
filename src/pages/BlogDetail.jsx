@@ -14,6 +14,126 @@ const T = {
   border: 'rgba(255,255,255,0.08)',
 }
 
+const renderBlockContent = (block) => {
+  const commonStyle = {
+    fontFamily: T.fontBody,
+    fontSize: 'clamp(1rem, 2.4vw, 1.15rem)',
+    lineHeight: 1.9,
+    color: 'rgba(255,255,255,0.75)',
+    letterSpacing: '0.012em',
+  }
+
+  switch (block.type) {
+    case 'h1':
+      return (
+        <h2 style={{ ...commonStyle, fontSize: '2rem', fontFamily: T.fontDisplay, marginBottom: '1.5rem', color: '#fff' }}>
+          {block.content}
+        </h2>
+      )
+    case 'h2':
+      return (
+        <h3 style={{ ...commonStyle, fontSize: '1.5rem', fontFamily: T.fontDisplay, marginBottom: '1.2rem', color: '#fff' }}>
+          {block.content}
+        </h3>
+      )
+    case 'h3':
+      return (
+        <h4 style={{ ...commonStyle, fontSize: '1.25rem', fontFamily: T.fontDisplay, marginBottom: '1rem', color: '#fff' }}>
+          {block.content}
+        </h4>
+      )
+    case 'quote':
+      return (
+        <blockquote style={{
+          borderLeft: `3px solid ${T.red}`,
+          paddingLeft: '1.5rem',
+          fontStyle: 'italic',
+          color: 'rgba(255,255,255,0.85)',
+          marginBottom: '2rem',
+          ...commonStyle,
+        }}>
+          {block.content}
+        </blockquote>
+      )
+    case 'ul':
+      return (
+        <ul style={{ marginBottom: '2rem', paddingLeft: '1.5rem' }}>
+          {block.content.split('\n').filter(item => item.trim()).map((item, i) => (
+            <li key={i} style={{ ...commonStyle, marginBottom: '0.5rem' }}>
+              {item.trim().replace(/^[-*]\s?/, '')}
+            </li>
+          ))}
+        </ul>
+      )
+    case 'ol':
+      return (
+        <ol style={{ marginBottom: '2rem', paddingLeft: '1.5rem' }}>
+          {block.content.split('\n').filter(item => item.trim()).map((item, i) => (
+            <li key={i} style={{ ...commonStyle, marginBottom: '0.5rem' }}>
+              {item.trim().replace(/^\d+\.\s?/, '')}
+            </li>
+          ))}
+        </ol>
+      )
+    case 'image':
+      // Handle image block with URL
+      if (typeof block.content === 'object' && block.content.url) {
+        return (
+          <figure style={{ marginBottom: '2rem' }}>
+            <img 
+              src={block.content.url} 
+              alt="blog content" 
+              style={{
+                width: '100%',
+                maxHeight: '500px',
+                objectFit: 'cover',
+                borderRadius: '0.5rem',
+                marginBottom: '0.5rem'
+              }} 
+            />
+          </figure>
+        )
+      }
+      return null
+    case 'hr':
+      return <hr style={{ borderColor: T.border, marginBottom: '2rem', marginTop: '2rem' }} />
+    case 'paragraph':
+      // Handle markdown images in paragraphs (legacy)
+      if (block.content && typeof block.content === 'string' && block.content.includes('![')){  
+        const imageRegex = /!\[.*?\]\((.*?)\)/
+        const match = block.content.match(imageRegex)
+        if (match && match[1]) {
+          return (
+            <figure style={{ marginBottom: '2rem' }}>
+              <img 
+                src={match[1]} 
+                alt="blog content" 
+                style={{
+                  width: '100%',
+                  maxHeight: '500px',
+                  objectFit: 'cover',
+                  borderRadius: '0.5rem',
+                  marginBottom: '0.5rem'
+                }} 
+              />
+            </figure>
+          )
+        }
+      }
+      return (
+        <p style={{ ...commonStyle, marginBottom: '2rem' }}>
+          {block.content}
+        </p>
+      )
+    default:
+      return (
+        <p style={{ ...commonStyle, marginBottom: '2rem' }}>
+          {block.content}
+        </p>
+      )
+  }
+}
+
 export default function BlogDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -48,7 +168,14 @@ export default function BlogDetail() {
       </div>
     )
 
-  const readTime = Math.max(1, Math.ceil(blog.content.length / 1000)) + ' min read'
+  const getContentLength = () => {
+    if (blog.blocks && Array.isArray(blog.blocks)) {
+      return blog.blocks.reduce((total, block) => total + (block.content?.length || 0), 0)
+    }
+    return blog.content?.length || 0
+  }
+  
+  const readTime = Math.max(1, Math.ceil(getContentLength() / 1000)) + ' min read'
   const isLongTitle = blog.title.length > 48
   const createdAt = blog.createdAt?.toDate
     ? blog.createdAt.toDate().toLocaleDateString()
@@ -142,15 +269,25 @@ export default function BlogDetail() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          {blog.content.split('\n\n').map((para, i) => (
-            <p key={i} style={{
-              fontFamily: T.fontBody,
-              fontSize: 'clamp(1rem, 2.4vw, 1.15rem)',
-              lineHeight: 1.9, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.012em',
-            }}>
-              {para}
-            </p>
-          ))}
+          {blog.blocks && Array.isArray(blog.blocks) ? (
+            // Render blocks if available
+            blog.blocks.map((block, i) => (
+              <div key={i}>
+                {renderBlockContent(block)}
+              </div>
+            ))
+          ) : (
+            // Fallback for old format
+            blog.content?.split('\n\n').map((para, i) => (
+              <p key={i} style={{
+                fontFamily: T.fontBody,
+                fontSize: 'clamp(1rem, 2.4vw, 1.15rem)',
+                lineHeight: 1.9, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.012em',
+              }}>
+                {para}
+              </p>
+            ))
+          )}
         </div>
 
         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '5rem', flexWrap: 'wrap' }}>

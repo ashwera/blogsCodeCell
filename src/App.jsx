@@ -5,6 +5,7 @@ import Nav from './components/Nav'
 import Home from './pages/Home'
 import Blogs from './pages/Blogs'
 import BlogDetail from './pages/BlogDetail'
+import WritePage from './pages/Write'
 import AdminPage from './pages/admin/AdminPage'
 import './App.css'
 
@@ -35,6 +36,7 @@ function App() {
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/write" element={<WritePage />} />
           </Route>
 
           {/* Blog detail has its own scroll-reactive header */}
